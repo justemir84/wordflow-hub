@@ -1,0 +1,2111 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WordFlow – İngilizce Kelime Öğren</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #12121a;
+    --surface2: #1a1a26;
+    --accent: #7c5cfc;
+    --accent2: #fc5c7d;
+    --accent3: #5cf8d1;
+    --text: #f0f0f8;
+    --muted: #6b6b8a;
+    --border: rgba(124,92,252,0.2);
+    --card-bg: rgba(18,18,26,0.95);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Background mesh */
+  body::before {
+    content:'';
+    position:fixed;
+    inset:0;
+    background:
+      radial-gradient(ellipse 60% 50% at 20% 10%, rgba(124,92,252,0.12) 0%, transparent 70%),
+      radial-gradient(ellipse 50% 40% at 80% 80%, rgba(252,92,125,0.08) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 60% at 60% 30%, rgba(92,248,209,0.05) 0%, transparent 70%);
+    pointer-events:none;
+    z-index:0;
+  }
+
+  .wrapper { position:relative; z-index:1; }
+
+  /* ===== HEADER ===== */
+  header {
+    padding: 24px 40px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    border-bottom: 1px solid var(--border);
+    backdrop-filter: blur(20px);
+    position:sticky;
+    top:0;
+    z-index:100;
+  }
+
+  .logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 22px;
+    letter-spacing: -0.5px;
+  }
+
+  .logo span { color: var(--accent); }
+
+  .streak-badge {
+    display:flex;
+    align-items:center;
+    gap:8px;
+    background: rgba(124,92,252,0.12);
+    border: 1px solid var(--border);
+    padding: 8px 16px;
+    border-radius: 50px;
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  .streak-fire { font-size:18px; }
+
+  /* ===== HERO ===== */
+  .hero {
+    padding: 60px 40px 40px;
+    text-align:center;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  .hero-tag {
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    background: rgba(92,248,209,0.1);
+    border: 1px solid rgba(92,248,209,0.3);
+    color: var(--accent3);
+    padding: 5px 14px;
+    border-radius: 50px;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2.2rem, 5vw, 3.5rem);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -2px;
+    margin-bottom: 16px;
+  }
+
+  .hero h1 em {
+    font-style:normal;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero p {
+    color: var(--muted);
+    font-size: 17px;
+    line-height: 1.6;
+    margin-bottom: 36px;
+  }
+
+  /* ===== PROGRESS BAR ===== */
+  .progress-section {
+    max-width: 900px;
+    margin: 0 auto 40px;
+    padding: 0 40px;
+  }
+
+  .progress-info {
+    display:flex;
+    justify-content:space-between;
+    margin-bottom: 8px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  .progress-bar-bg {
+    background: var(--surface2);
+    border-radius: 100px;
+    height: 8px;
+    overflow: hidden;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    border-radius: 100px;
+    transition: width 0.6s cubic-bezier(0.34,1.56,0.64,1);
+  }
+
+  /* ===== MAIN CONTENT ===== */
+  .main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 40px 60px;
+  }
+
+  /* ===== TABS ===== */
+  .tabs {
+    display:flex;
+    gap:4px;
+    background: var(--surface);
+    padding: 4px;
+    border-radius: 16px;
+    margin-bottom: 32px;
+    border: 1px solid var(--border);
+  }
+
+  .tab-btn {
+    flex:1;
+    padding: 10px;
+    border:none;
+    border-radius: 12px;
+    background:transparent;
+    color: var(--muted);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    cursor:pointer;
+    transition: all 0.2s;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+  }
+
+  .tab-btn.active {
+    background: var(--accent);
+    color: white;
+  }
+
+  .tab-btn:hover:not(.active) {
+    color: var(--text);
+    background: var(--surface2);
+  }
+
+  .tab-content { display:none; }
+  .tab-content.active { display:block; animation: fadeIn 0.3s ease; }
+
+  @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+
+  /* ===== FLASH CARD ===== */
+  .flashcard-container {
+    perspective: 1200px;
+    margin-bottom: 24px;
+  }
+
+  .flashcard {
+    width:100%;
+    min-height: 280px;
+    position:relative;
+    transform-style: preserve-3d;
+    transition: transform 0.6s cubic-bezier(0.34,1.56,0.64,1);
+    cursor:pointer;
+  }
+
+  .flashcard.flipped { transform: rotateY(180deg); }
+
+  .card-face {
+    position:absolute;
+    inset:0;
+    backface-visibility: hidden;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 40px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+  }
+
+  .card-back { transform: rotateY(180deg); background: linear-gradient(135deg, rgba(124,92,252,0.15), rgba(252,92,125,0.05)); }
+
+  .card-label {
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 16px;
+  }
+
+  .card-word {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 800;
+    letter-spacing: -2px;
+    margin-bottom: 12px;
+  }
+
+  .card-phonetic {
+    color: var(--accent3);
+    font-size: 18px;
+    margin-bottom: 12px;
+    font-style: italic;
+  }
+
+  .card-type {
+    background: rgba(124,92,252,0.15);
+    border: 1px solid rgba(124,92,252,0.3);
+    color: var(--accent);
+    padding: 4px 12px;
+    border-radius: 50px;
+    font-size: 12px;
+  }
+
+  .card-translation {
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: var(--accent3);
+  }
+
+  .card-example {
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--muted);
+    max-width: 400px;
+    font-style: italic;
+  }
+
+  .card-hint {
+    position:absolute;
+    bottom: 16px;
+    color: var(--muted);
+    font-size: 12px;
+    display:flex;
+    align-items:center;
+    gap:4px;
+  }
+
+  /* ===== CARD ACTIONS ===== */
+  .card-actions {
+    display:flex;
+    gap:12px;
+    margin-bottom: 24px;
+  }
+
+  .action-btn {
+    flex:1;
+    padding: 16px;
+    border:none;
+    border-radius: 16px;
+    font-family:'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    cursor:pointer;
+    transition: all 0.2s;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+  }
+
+  .btn-forgot { background: rgba(252,92,125,0.15); color: #fc5c7d; border: 1px solid rgba(252,92,125,0.3); }
+  .btn-hard   { background: rgba(255,180,50,0.12); color: #ffb432; border: 1px solid rgba(255,180,50,0.25); }
+  .btn-knew   { background: rgba(92,248,209,0.12); color: #5cf8d1; border: 1px solid rgba(92,248,209,0.25); }
+
+  .action-btn:hover { transform: translateY(-2px); filter: brightness(1.2); }
+
+  /* ===== WORD LIST ===== */
+  .word-grid {
+    display:grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap:16px;
+  }
+
+  .word-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 20px;
+    cursor:pointer;
+    transition: all 0.25s;
+    position:relative;
+    overflow:hidden;
+  }
+
+  .word-card::before {
+    content:'';
+    position:absolute;
+    inset:0;
+    background: linear-gradient(135deg, rgba(124,92,252,0.05), transparent);
+    opacity:0;
+    transition:0.3s;
+  }
+
+  .word-card:hover { transform:translateY(-3px); border-color: rgba(124,92,252,0.5); }
+  .word-card:hover::before { opacity:1; }
+
+  .word-card-header {
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    margin-bottom: 8px;
+  }
+
+  .word-card-word {
+    font-family:'Syne',sans-serif;
+    font-size:20px;
+    font-weight:700;
+  }
+
+  .word-card-status {
+    width:8px;
+    height:8px;
+    border-radius:50%;
+    margin-top:6px;
+  }
+
+  .status-new { background:#7c5cfc; }
+  .status-learning { background:#ffb432; }
+  .status-known { background:#5cf8d1; }
+
+  .word-card-type { font-size:11px; color: var(--muted); margin-bottom:4px; }
+  .word-card-tr { font-size:15px; font-weight:500; color: var(--accent3); margin-bottom:8px; }
+  .word-card-example { font-size:12px; color: var(--muted); line-height:1.5; font-style:italic; }
+
+  /* ===== QUIZ ===== */
+  .quiz-question {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 36px;
+    margin-bottom: 20px;
+    text-align:center;
+  }
+
+  .quiz-label { font-size:12px; color: var(--muted); letter-spacing:2px; text-transform:uppercase; margin-bottom:16px; }
+
+  .quiz-sentence {
+    font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+    line-height:1.7;
+    font-weight:300;
+  }
+
+  .blank {
+    display:inline-block;
+    min-width:120px;
+    border-bottom:3px solid var(--accent);
+    margin: 0 4px;
+    vertical-align:bottom;
+    text-align:center;
+    font-weight:600;
+    color: var(--accent);
+  }
+
+  .quiz-options {
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap:12px;
+    margin-bottom:20px;
+  }
+
+  .option-btn {
+    padding: 16px 20px;
+    border:none;
+    border-radius:16px;
+    background: var(--surface);
+    color: var(--text);
+    border: 1px solid var(--border);
+    font-family:'DM Sans',sans-serif;
+    font-size:15px;
+    font-weight:500;
+    cursor:pointer;
+    transition:all 0.2s;
+    text-align:left;
+  }
+
+  .option-btn:hover:not(:disabled) { border-color: var(--accent); background: rgba(124,92,252,0.1); }
+  .option-btn.correct { background: rgba(92,248,209,0.15); border-color:#5cf8d1; color:#5cf8d1; }
+  .option-btn.wrong   { background: rgba(252,92,125,0.15); border-color:#fc5c7d; color:#fc5c7d; }
+
+  .quiz-score {
+    display:flex;
+    gap:20px;
+    justify-content:center;
+    margin-bottom:28px;
+  }
+
+  .score-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 12px 24px;
+    border-radius: 16px;
+    text-align:center;
+  }
+
+  .score-num { font-family:'Syne',sans-serif; font-size:28px; font-weight:800; }
+  .score-label { font-size:11px; color:var(--muted); letter-spacing:1px; }
+
+  /* ===== BUTTONS ===== */
+  .btn-primary {
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding: 14px 28px;
+    border:none;
+    border-radius:14px;
+    background: linear-gradient(135deg, var(--accent), #5c3df0);
+    color:white;
+    font-family:'DM Sans',sans-serif;
+    font-size:15px;
+    font-weight:600;
+    cursor:pointer;
+    transition:all 0.2s;
+  }
+
+  .btn-primary:hover { transform:translateY(-2px); box-shadow:0 8px 30px rgba(124,92,252,0.4); }
+
+  .btn-ghost {
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding: 12px 24px;
+    border: 1px solid var(--border);
+    border-radius:14px;
+    background:transparent;
+    color:var(--muted);
+    font-family:'DM Sans',sans-serif;
+    font-size:14px;
+    cursor:pointer;
+    transition:all 0.2s;
+  }
+
+  .btn-ghost:hover { color:var(--text); border-color:var(--accent); }
+
+  /* ===== WORD COUNT ===== */
+  .stats-row {
+    display:grid;
+    grid-template-columns: repeat(3,1fr);
+    gap:16px;
+    margin-bottom: 32px;
+  }
+
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius:20px;
+    padding:20px;
+    text-align:center;
+  }
+
+  .stat-num {
+    font-family:'Syne',sans-serif;
+    font-size:2rem;
+    font-weight:800;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    background-clip:text;
+  }
+
+  .stat-label { font-size:12px; color:var(--muted); margin-top:4px; }
+
+  /* ===== ADD WORD FORM ===== */
+  .add-form {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius:24px;
+    padding:28px;
+    margin-bottom:28px;
+  }
+
+  .add-form h3 { font-family:'Syne',sans-serif; font-size:18px; font-weight:700; margin-bottom:20px; }
+
+  .form-row { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px; }
+
+  .form-group { display:flex; flex-direction:column; gap:8px; }
+
+  .form-group label { font-size:12px; color:var(--muted); text-transform:uppercase; letter-spacing:1px; }
+
+  .form-input {
+    padding: 12px 16px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius:12px;
+    color:var(--text);
+    font-family:'DM Sans',sans-serif;
+    font-size:15px;
+    outline:none;
+    transition:border-color 0.2s;
+  }
+
+  .form-input:focus { border-color: var(--accent); }
+  .form-input::placeholder { color:var(--muted); }
+
+  /* ===== TOAST ===== */
+  .toast {
+    position:fixed;
+    bottom:30px;
+    left:50%;
+    transform:translateX(-50%) translateY(100px);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius:16px;
+    padding:14px 24px;
+    font-size:14px;
+    font-weight:500;
+    z-index:999;
+    transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
+    box-shadow:0 20px 60px rgba(0,0,0,0.5);
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+
+  .toast.show { transform:translateX(-50%) translateY(0); }
+
+  /* ===== RESPONSIVE ===== */
+  @media(max-width:600px) {
+    header { padding:16px 20px; }
+    .hero, .progress-section, .main { padding-left:20px; padding-right:20px; }
+    .form-row { grid-template-columns:1fr; }
+    .quiz-options { grid-template-columns:1fr; }
+    .stats-row { grid-template-columns:1fr 1fr; }
+  }
+
+  /* ===== TYPING INPUT ===== */
+  .type-area {
+    display:flex;
+    gap:12px;
+    margin-bottom:20px;
+    align-items:center;
+  }
+
+  .type-input {
+    flex:1;
+    padding:14px 18px;
+    background:var(--surface2);
+    border:1px solid var(--border);
+    border-radius:14px;
+    color:var(--text);
+    font-family:'DM Sans',sans-serif;
+    font-size:16px;
+    outline:none;
+    transition:border-color 0.2s;
+  }
+
+  .type-input:focus { border-color:var(--accent); }
+  .type-input::placeholder { color:var(--muted); }
+</style>
+</head>
+<body>
+<div class="wrapper">
+
+  <!-- HEADER -->
+  <header>
+    <div class="logo">Word<span>Flow</span></div>
+    <div class="streak-badge">
+      <span class="streak-fire">🔥</span>
+      <span id="streakCount">0</span> gün streak
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-tag">✦ Akıllı Kelime Öğrenme</div>
+    <h1>İngilizce kelimeleri <em>kalıcı</em> öğren</h1>
+    <p>Flashcard, quiz ve cümle alıştırmalarıyla 3.000 kelimeye ulaş. Her gün 10 kelime, 1 yılda akıcı İngilizce.</p>
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="progress-section">
+    <div class="progress-info">
+      <span>Günlük hedef</span>
+      <span id="progressText">0 / 10 kelime</span>
+    </div>
+    <div class="progress-bar-bg">
+      <div class="progress-bar-fill" id="progressBar" style="width:0%"></div>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- STATS -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-num" id="statTotal">0</div>
+        <div class="stat-label">Toplam Kelime</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="statKnown">0</div>
+        <div class="stat-label">Öğrenildi</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="statScore">0%</div>
+        <div class="stat-label">Doğruluk</div>
+      </div>
+    </div>
+
+    <!-- TABS -->
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('flashcard')">🃏 Flashcard</button>
+      <button class="tab-btn" onclick="switchTab('quiz')">🎯 Quiz</button>
+      <button class="tab-btn" onclick="switchTab('words')">📚 Kelimeler</button>
+      <button class="tab-btn" onclick="switchTab('add')">➕ Ekle</button>
+    </div>
+
+    <!-- FLASHCARD TAB -->
+    <div class="tab-content active" id="tab-flashcard">
+      <div class="flashcard-container">
+        <div class="flashcard" id="flashcard" onclick="flipCard()">
+          <div class="card-face card-front">
+            <div class="card-label">İngilizce</div>
+            <div class="card-word" id="fc-word">—</div>
+            <div class="card-phonetic" id="fc-phonetic"></div>
+            <div class="card-type" id="fc-type"></div>
+            <div class="card-hint">👆 Çevirmek için tıkla</div>
+          </div>
+          <div class="card-face card-back">
+            <div class="card-label">Türkçe</div>
+            <div class="card-translation" id="fc-translation">—</div>
+            <div class="card-example" id="fc-example"></div>
+            <div class="card-hint">💡 Cümle örneği</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-actions" id="card-actions" style="display:none">
+        <button class="action-btn btn-forgot" onclick="rateCard('forgot')">😓 Bilmedim</button>
+        <button class="action-btn btn-hard" onclick="rateCard('hard')">🤔 Zor</button>
+        <button class="action-btn btn-knew" onclick="rateCard('knew')">✅ Bildim!</button>
+      </div>
+
+      <div style="display:flex;gap:12px;justify-content:center">
+        <button class="btn-primary" onclick="nextCard()">Sonraki Kelime →</button>
+        <button class="btn-ghost" onclick="shuffleCards()">🔀 Karıştır</button>
+      </div>
+    </div>
+
+    <!-- QUIZ TAB -->
+    <div class="tab-content" id="tab-quiz">
+      <div class="quiz-score">
+        <div class="score-item">
+          <div class="score-num" style="color:#5cf8d1" id="quizCorrect">0</div>
+          <div class="score-label">Doğru</div>
+        </div>
+        <div class="score-item">
+          <div class="score-num" style="color:#fc5c7d" id="quizWrong">0</div>
+          <div class="score-label">Yanlış</div>
+        </div>
+        <div class="score-item">
+          <div class="score-num" id="quizStreak">0</div>
+          <div class="score-label">Seri</div>
+        </div>
+      </div>
+
+      <!-- Quiz Type 1: Multiple Choice -->
+      <div id="quiz-mc">
+        <div class="quiz-question">
+          <div class="quiz-label">Hangi kelime doğru? — Türkçe: <strong id="q-turkish" style="color:var(--accent3)">—</strong></div>
+          <div class="quiz-sentence" id="q-sentence">
+            Cümle: <span id="q-sent-text" style="font-style:italic">—</span>
+          </div>
+        </div>
+        <div class="quiz-options" id="q-options"></div>
+      </div>
+
+      <!-- Quiz Type 2: Fill in blank -->
+      <div id="quiz-fill" style="display:none">
+        <div class="quiz-question">
+          <div class="quiz-label">Boşluğu doldur</div>
+          <div class="quiz-sentence" id="q-fill-sentence">—</div>
+        </div>
+        <div class="type-area">
+          <input type="text" class="type-input" id="q-fill-input" placeholder="Cevabınızı yazın..." onkeydown="if(event.key==='Enter')checkFill()">
+          <button class="btn-primary" onclick="checkFill()">Kontrol Et</button>
+        </div>
+        <div id="q-fill-feedback" style="font-size:15px;margin-bottom:16px;"></div>
+      </div>
+
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        <button class="btn-primary" onclick="nextQuiz()">Sonraki Soru →</button>
+        <button class="btn-ghost" onclick="toggleQuizType()">🔄 Quiz Türü Değiştir</button>
+      </div>
+    </div>
+
+    <!-- WORDS TAB -->
+    <div class="tab-content" id="tab-words">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px">
+        <h2 style="font-family:'Syne',sans-serif;font-size:22px;font-weight:700">Kelime Listem</h2>
+        <div style="display:flex;gap:8px">
+          <input type="text" class="form-input" id="search-input" placeholder="Kelime ara..." oninput="renderWordList()" style="width:200px;padding:10px 14px">
+        </div>
+      </div>
+      <div class="word-grid" id="word-grid"></div>
+    </div>
+
+    <!-- ADD TAB -->
+    <div class="tab-content" id="tab-add">
+      <div class="add-form">
+        <h3>➕ Yeni Kelime Ekle</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label>İngilizce Kelime *</label>
+            <input type="text" class="form-input" id="new-word" placeholder="Örn: resilient">
+          </div>
+          <div class="form-group">
+            <label>Türkçe Anlamı *</label>
+            <input type="text" class="form-input" id="new-tr" placeholder="Örn: dayanıklı">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Telaffuz</label>
+            <input type="text" class="form-input" id="new-phonetic" placeholder="Örn: /rɪˈzɪliənt/">
+          </div>
+          <div class="form-group">
+            <label>Kelime Türü</label>
+            <select class="form-input" id="new-type">
+              <option value="adjective">Sıfat (adjective)</option>
+              <option value="noun">İsim (noun)</option>
+              <option value="verb">Fiil (verb)</option>
+              <option value="adverb">Zarf (adverb)</option>
+              <option value="phrase">İfade (phrase)</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group" style="margin-bottom:20px">
+          <label>Örnek Cümle</label>
+          <input type="text" class="form-input" id="new-example" placeholder="Örn: She is resilient despite all the hardships.">
+        </div>
+        <button class="btn-primary" onclick="addWord()">✅ Kelime Ekle</button>
+      </div>
+
+      <div class="add-form">
+        <h3>📋 Toplu Ekle (CSV)</h3>
+        <div class="form-group" style="margin-bottom:16px">
+          <label>Kelime,Türkçe,Cümle formatında — her satıra bir kelime</label>
+          <textarea class="form-input" id="bulk-input" rows="5"
+            placeholder="example,örnek,This is an example sentence.
+beautiful,güzel,She has a beautiful smile.
+success,başarı,Hard work leads to success."></textarea>
+        </div>
+        <button class="btn-primary" onclick="bulkAdd()">📥 Toplu İçe Aktar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ========== DATA ==========
+const DEFAULT_WORDS = [
+  { word:"able", tr:"yapabilir", phonetic:"EY-bıl", type:"adjective", example:"She is able to speak three languages.", status:"new", score:0 },
+  { word:"accept", tr:"kabul etmek", phonetic:"ık-SEPT", type:"verb", example:"Please accept my apology.", status:"new", score:0 },
+  { word:"accident", tr:"kaza", phonetic:"EK-si-dınt", type:"noun", example:"There was an accident on the road.", status:"new", score:0 },
+  { word:"account", tr:"hesap", phonetic:"ı-KAUNT", type:"noun", example:"I opened a new bank account.", status:"new", score:0 },
+  { word:"achieve", tr:"başarmak", phonetic:"ı-ÇİV", type:"verb", example:"You can achieve your goals with hard work.", status:"new", score:0 },
+  { word:"act", tr:"hareket etmek / davranmak", phonetic:"EKT", type:"verb", example:"You need to act quickly.", status:"new", score:0 },
+  { word:"action", tr:"eylem", phonetic:"EK-şın", type:"noun", example:"Words without action mean nothing.", status:"new", score:0 },
+  { word:"add", tr:"eklemek", phonetic:"ED", type:"verb", example:"Add some salt to the soup.", status:"new", score:0 },
+  { word:"address", tr:"adres", phonetic:"Ä-dres", type:"noun", example:"What is your home address?", status:"new", score:0 },
+  { word:"adult", tr:"yetişkin", phonetic:"A-dılt", type:"noun", example:"This movie is for adults only.", status:"new", score:0 },
+  { word:"advance", tr:"ilerleme / ilerlemek", phonetic:"ıd-VANS", type:"verb", example:"Technology continues to advance rapidly.", status:"new", score:0 },
+  { word:"advice", tr:"tavsiye", phonetic:"ıd-VAYS", type:"noun", example:"Can you give me some advice?", status:"new", score:0 },
+  { word:"afford", tr:"karşılayabilmek", phonetic:"ı-FORD", type:"verb", example:"I cannot afford a new car right now.", status:"new", score:0 },
+  { word:"afraid", tr:"korkmak", phonetic:"ı-FREYD", type:"adjective", example:"She is afraid of spiders.", status:"new", score:0 },
+  { word:"age", tr:"yaş / çağ", phonetic:"EYC", type:"noun", example:"What is your age?", status:"new", score:0 },
+  { word:"agree", tr:"katılmak", phonetic:"ı-GRİ", type:"verb", example:"I completely agree with you.", status:"new", score:0 },
+  { word:"air", tr:"hava", phonetic:"EYR", type:"noun", example:"The mountain air is very fresh.", status:"new", score:0 },
+  { word:"allow", tr:"izin vermek", phonetic:"ı-LAU", type:"verb", example:"They do not allow smoking inside.", status:"new", score:0 },
+  { word:"almost", tr:"neredeyse", phonetic:"OL-mowst", type:"adverb", example:"I almost missed the bus.", status:"new", score:0 },
+  { word:"alone", tr:"yalnız", phonetic:"ı-LOWN", type:"adjective", example:"She likes to be alone sometimes.", status:"new", score:0 },
+  { word:"already", tr:"zaten", phonetic:"ol-RED-i", type:"adverb", example:"I have already eaten dinner.", status:"new", score:0 },
+  { word:"also", tr:"ayrıca", phonetic:"OL-sow", type:"adverb", example:"She also speaks French.", status:"new", score:0 },
+  { word:"although", tr:"her ne kadar", phonetic:"ol-DOW", type:"conjunction", example:"Although it was raining, we went out.", status:"new", score:0 },
+  { word:"always", tr:"her zaman", phonetic:"OL-weyz", type:"adverb", example:"He always wakes up early.", status:"new", score:0 },
+  { word:"angry", tr:"kızgın", phonetic:"ANG-ri", type:"adjective", example:"She was angry about the decision.", status:"new", score:0 },
+  { word:"answer", tr:"cevap / cevaplamak", phonetic:"AN-sır", type:"noun", example:"What is the answer to this question?", status:"new", score:0 },
+  { word:"anxious", tr:"endişeli", phonetic:"ANK-şıs", type:"adjective", example:"She felt anxious before the exam.", status:"new", score:0 },
+  { word:"appear", tr:"görünmek", phonetic:"ı-PİYR", type:"verb", example:"Stars appear in the sky at night.", status:"new", score:0 },
+  { word:"apply", tr:"başvurmak", phonetic:"ı-PLAY", type:"verb", example:"I will apply for the job tomorrow.", status:"new", score:0 },
+  { word:"approach", tr:"yaklaşmak", phonetic:"ı-PROÇ", type:"verb", example:"A stranger approached me on the street.", status:"new", score:0 },
+  { word:"area", tr:"alan / bölge", phonetic:"EY-ri-ı", type:"noun", example:"This area is known for its beauty.", status:"new", score:0 },
+  { word:"argue", tr:"tartışmak", phonetic:"AR-gyu", type:"verb", example:"They always argue about small things.", status:"new", score:0 },
+  { word:"arrange", tr:"düzenlemek", phonetic:"ı-REYNC", type:"verb", example:"She arranged the flowers beautifully.", status:"new", score:0 },
+  { word:"arrive", tr:"varmak", phonetic:"ı-RAYV", type:"verb", example:"We will arrive at noon.", status:"new", score:0 },
+  { word:"ask", tr:"sormak", phonetic:"ASK", type:"verb", example:"May I ask you a question?", status:"new", score:0 },
+  { word:"assist", tr:"yardım etmek", phonetic:"ı-SİST", type:"verb", example:"Can you assist me with this task?", status:"new", score:0 },
+  { word:"assume", tr:"varsaymak", phonetic:"ı-SYUM", type:"verb", example:"Don't assume things without knowing the facts.", status:"new", score:0 },
+  { word:"attach", tr:"iliştirmek", phonetic:"ı-TAÇ", type:"verb", example:"Please attach your CV to the email.", status:"new", score:0 },
+  { word:"attempt", tr:"denemek / girişim", phonetic:"ı-TEMPT", type:"verb", example:"She made an attempt to climb the mountain.", status:"new", score:0 },
+  { word:"attend", tr:"katılmak", phonetic:"ı-TEND", type:"verb", example:"I will attend the meeting tomorrow.", status:"new", score:0 },
+  { word:"attract", tr:"çekmek", phonetic:"ı-TRAKT", type:"verb", example:"The colorful flowers attract butterflies.", status:"new", score:0 },
+  { word:"available", tr:"mevcut", phonetic:"ı-VEY-lı-bıl", type:"adjective", example:"Is this product available online?", status:"new", score:0 },
+  { word:"avoid", tr:"kaçınmak", phonetic:"ı-VOYD", type:"verb", example:"Try to avoid eating too much sugar.", status:"new", score:0 },
+  { word:"aware", tr:"farkında", phonetic:"ı-WER", type:"adjective", example:"Are you aware of the risks?", status:"new", score:0 },
+  { word:"background", tr:"arka plan / geçmiş", phonetic:"BAK-graund", type:"noun", example:"Tell me about your educational background.", status:"new", score:0 },
+  { word:"balance", tr:"denge / dengeli olmak", phonetic:"BAL-ıns", type:"noun", example:"A good diet requires balance.", status:"new", score:0 },
+  { word:"basic", tr:"temel", phonetic:"BEY-sik", type:"adjective", example:"I have basic knowledge of cooking.", status:"new", score:0 },
+  { word:"battle", tr:"savaş / mücadele", phonetic:"BAT-ıl", type:"noun", example:"Life is sometimes a battle.", status:"new", score:0 },
+  { word:"bear", tr:"dayanmak / taşımak", phonetic:"BER", type:"verb", example:"I can't bear this heat anymore.", status:"new", score:0 },
+  { word:"become", tr:"olmak", phonetic:"bi-KAM", type:"verb", example:"She wants to become a doctor.", status:"new", score:0 },
+  { word:"behavior", tr:"davranış", phonetic:"bi-HEY-vyır", type:"noun", example:"Good behavior is always appreciated.", status:"new", score:0 },
+  { word:"believe", tr:"inanmak", phonetic:"bi-LİV", type:"verb", example:"I believe in your abilities.", status:"new", score:0 },
+  { word:"benefit", tr:"fayda / yararlanmak", phonetic:"BEN-i-fit", type:"noun", example:"Exercise has many health benefits.", status:"new", score:0 },
+  { word:"beyond", tr:"ötesinde", phonetic:"bi-YOND", type:"preposition", example:"The village is beyond the forest.", status:"new", score:0 },
+  { word:"bond", tr:"bağ / bağlanmak", phonetic:"BOND", type:"noun", example:"There is a strong bond between them.", status:"new", score:0 },
+  { word:"boring", tr:"sıkıcı", phonetic:"BOR-ing", type:"adjective", example:"The lecture was very boring.", status:"new", score:0 },
+  { word:"brave", tr:"cesur", phonetic:"BREYV", type:"adjective", example:"The brave firefighter saved the child.", status:"new", score:0 },
+  { word:"break", tr:"kırmak / ara", phonetic:"BREYK", type:"verb", example:"Don't break the rules.", status:"new", score:0 },
+  { word:"bright", tr:"parlak / zeki", phonetic:"BRAYT", type:"adjective", example:"She is a bright student.", status:"new", score:0 },
+  { word:"bring", tr:"getirmek", phonetic:"BRİNG", type:"verb", example:"Please bring me a glass of water.", status:"new", score:0 },
+  { word:"broad", tr:"geniş", phonetic:"BROD", type:"adjective", example:"She has a broad knowledge of history.", status:"new", score:0 },
+  { word:"build", tr:"inşa etmek", phonetic:"BİLD", type:"verb", example:"They are building a new school.", status:"new", score:0 },
+  { word:"busy", tr:"meşgul", phonetic:"BİZ-i", type:"adjective", example:"She is always busy with work.", status:"new", score:0 },
+  { word:"calm", tr:"sakin", phonetic:"KAM", type:"adjective", example:"Stay calm in difficult situations.", status:"new", score:0 },
+  { word:"capable", tr:"yetenekli", phonetic:"KEY-pı-bıl", type:"adjective", example:"She is capable of doing great things.", status:"new", score:0 },
+  { word:"care", tr:"önemsemek / özen", phonetic:"KER", type:"verb", example:"She truly cares about her students.", status:"new", score:0 },
+  { word:"cause", tr:"neden olmak / sebep", phonetic:"KOZ", type:"verb", example:"Stress can cause health problems.", status:"new", score:0 },
+  { word:"certain", tr:"kesin / belirli", phonetic:"SÖR-tın", type:"adjective", example:"I am certain about my decision.", status:"new", score:0 },
+  { word:"change", tr:"değişmek / değişim", phonetic:"ÇEYNC", type:"verb", example:"Things change over time.", status:"new", score:0 },
+  { word:"charge", tr:"şarj etmek / ücret", phonetic:"ÇARC", type:"verb", example:"Please charge your phone.", status:"new", score:0 },
+  { word:"choose", tr:"seçmek", phonetic:"ÇUZ", type:"verb", example:"Choose the right path in life.", status:"new", score:0 },
+  { word:"circumstance", tr:"koşul / durum", phonetic:"SÖR-kım-stans", type:"noun", example:"Under any circumstance, stay positive.", status:"new", score:0 },
+  { word:"claim", tr:"iddia etmek", phonetic:"KLEYM", type:"verb", example:"He claims to be an expert.", status:"new", score:0 },
+  { word:"clear", tr:"açık / temizlemek", phonetic:"KLİYR", type:"adjective", example:"The instructions are very clear.", status:"new", score:0 },
+  { word:"clever", tr:"zeki / akıllı", phonetic:"KLEV-ır", type:"adjective", example:"She found a clever solution.", status:"new", score:0 },
+  { word:"close", tr:"kapatmak / yakın", phonetic:"KLOWZ", type:"verb", example:"Please close the door.", status:"new", score:0 },
+  { word:"collect", tr:"toplamak", phonetic:"kı-LEKT", type:"verb", example:"He collects old coins as a hobby.", status:"new", score:0 },
+  { word:"comfortable", tr:"rahat", phonetic:"KAM-fır-tı-bıl", type:"adjective", example:"This chair is very comfortable.", status:"new", score:0 },
+  { word:"commit", tr:"taahhüt etmek", phonetic:"kı-MİT", type:"verb", example:"Commit to your goals every day.", status:"new", score:0 },
+  { word:"communicate", tr:"iletişim kurmak", phonetic:"kı-MYU-ni-keyt", type:"verb", example:"It is important to communicate clearly.", status:"new", score:0 },
+  { word:"community", tr:"topluluk", phonetic:"kı-MYU-ni-ti", type:"noun", example:"We should help our community.", status:"new", score:0 },
+  { word:"compare", tr:"karşılaştırmak", phonetic:"kım-PER", type:"verb", example:"Don't compare yourself to others.", status:"new", score:0 },
+  { word:"complete", tr:"tamamlamak / tam", phonetic:"kım-PLİT", type:"verb", example:"Complete your homework before playing.", status:"new", score:0 },
+  { word:"complex", tr:"karmaşık", phonetic:"KOM-pleks", type:"adjective", example:"This is a complex problem.", status:"new", score:0 },
+  { word:"concern", tr:"endişe / ilgilendirmek", phonetic:"kın-SÖRN", type:"noun", example:"Your health is my main concern.", status:"new", score:0 },
+  { word:"condition", tr:"koşul / durum", phonetic:"kın-DİŞ-ın", type:"noun", example:"The road conditions are dangerous.", status:"new", score:0 },
+  { word:"connect", tr:"bağlamak", phonetic:"kı-NEKT", type:"verb", example:"Connect the cable to the device.", status:"new", score:0 },
+  { word:"consider", tr:"dikkate almak", phonetic:"kın-SİD-ır", type:"verb", example:"Consider all options before deciding.", status:"new", score:0 },
+  { word:"control", tr:"kontrol etmek", phonetic:"kın-TROWL", type:"verb", example:"You cannot control everything.", status:"new", score:0 },
+  { word:"convince", tr:"ikna etmek", phonetic:"kın-VİNS", type:"verb", example:"She convinced me to join the team.", status:"new", score:0 },
+  { word:"correct", tr:"doğru / düzeltmek", phonetic:"kı-REKT", type:"adjective", example:"Your answer is correct.", status:"new", score:0 },
+  { word:"courage", tr:"cesaret", phonetic:"KÖR-ic", type:"noun", example:"It takes courage to speak the truth.", status:"new", score:0 },
+  { word:"create", tr:"yaratmak", phonetic:"kri-EYT", type:"verb", example:"Create something new every day.", status:"new", score:0 },
+  { word:"critical", tr:"eleştirel / kritik", phonetic:"KRİT-i-kıl", type:"adjective", example:"Critical thinking is an important skill.", status:"new", score:0 },
+  { word:"culture", tr:"kültür", phonetic:"KÖL-çır", type:"noun", example:"Every country has its own culture.", status:"new", score:0 },
+  { word:"damage", tr:"zarar / zarar vermek", phonetic:"DEM-ic", type:"noun", example:"The storm caused serious damage.", status:"new", score:0 },
+  { word:"deal", tr:"anlaşma / başa çıkmak", phonetic:"DiL", type:"noun", example:"They made a deal with the company.", status:"new", score:0 },
+  { word:"decide", tr:"karar vermek", phonetic:"di-SAYD", type:"verb", example:"You need to decide quickly.", status:"new", score:0 },
+  { word:"defeat", tr:"yenmek / yenilgi", phonetic:"di-FİT", type:"verb", example:"They defeated the other team easily.", status:"new", score:0 },
+  { word:"define", tr:"tanımlamak", phonetic:"di-FAYN", type:"verb", example:"Please define the word in your own words.", status:"new", score:0 },
+  { word:"deliver", tr:"teslim etmek", phonetic:"di-LİV-ır", type:"verb", example:"The package will be delivered tomorrow.", status:"new", score:0 },
+  { word:"demand", tr:"talep etmek / talep", phonetic:"di-MAND", type:"verb", example:"She demands the best from herself.", status:"new", score:0 },
+  { word:"deny", tr:"reddetmek / inkâr etmek", phonetic:"di-NAY", type:"verb", example:"He denied stealing the money.", status:"new", score:0 },
+  { word:"depend", tr:"bağlı olmak", phonetic:"di-PEND", type:"verb", example:"Success depends on your effort.", status:"new", score:0 },
+  { word:"describe", tr:"tanımlamak / anlatmak", phonetic:"di-SKRAYB", type:"verb", example:"Describe what you see in the picture.", status:"new", score:0 },
+  { word:"deserve", tr:"hak etmek", phonetic:"di-ZÖRV", type:"verb", example:"You deserve a long vacation.", status:"new", score:0 },
+  { word:"desire", tr:"arzu / arzulamak", phonetic:"di-ZAYR", type:"noun", example:"She has a strong desire to succeed.", status:"new", score:0 },
+  { word:"detail", tr:"ayrıntı", phonetic:"Di-teyl", type:"noun", example:"Pay attention to every detail.", status:"new", score:0 },
+  { word:"determine", tr:"belirlemek", phonetic:"di-TÖR-min", type:"verb", example:"Determine your priorities first.", status:"new", score:0 },
+  { word:"develop", tr:"geliştirmek", phonetic:"di-VEL-ıp", type:"verb", example:"She developed her skills over the years.", status:"new", score:0 },
+  { word:"difference", tr:"fark", phonetic:"DİF-rıns", type:"noun", example:"What is the difference between the two?", status:"new", score:0 },
+  { word:"difficult", tr:"zor", phonetic:"DİF-i-kılt", type:"adjective", example:"Learning a new language is difficult.", status:"new", score:0 },
+  { word:"direct", tr:"doğrudan / yönetmek", phonetic:"dı-REKT", type:"adjective", example:"Give me a direct answer please.", status:"new", score:0 },
+  { word:"discover", tr:"keşfetmek", phonetic:"dis-KAV-ır", type:"verb", example:"Scientists discover new things every year.", status:"new", score:0 },
+  { word:"discuss", tr:"tartışmak", phonetic:"dis-KAS", type:"verb", example:"Let's discuss the plan together.", status:"new", score:0 },
+  { word:"distance", tr:"mesafe", phonetic:"DİS-tıns", type:"noun", example:"The distance between the cities is 200 km.", status:"new", score:0 },
+  { word:"diverse", tr:"çeşitli", phonetic:"day-VÖRS", type:"adjective", example:"The city has a diverse population.", status:"new", score:0 },
+  { word:"divide", tr:"bölmek", phonetic:"di-VAYD", type:"verb", example:"Divide the pizza into equal slices.", status:"new", score:0 },
+  { word:"doubt", tr:"şüphe / şüphelenmek", phonetic:"DAUT", type:"noun", example:"I have no doubt that you can do it.", status:"new", score:0 },
+  { word:"dream", tr:"rüya / hayal etmek", phonetic:"DRİM", type:"noun", example:"Never stop chasing your dream.", status:"new", score:0 },
+  { word:"drive", tr:"sürmek / itici güç", phonetic:"DRAYV", type:"verb", example:"Drive carefully on wet roads.", status:"new", score:0 },
+  { word:"drop", tr:"düşürmek / düşmek", phonetic:"DROP", type:"verb", example:"Don't drop the glass.", status:"new", score:0 },
+  { word:"earn", tr:"kazanmak", phonetic:"ÖRN", type:"verb", example:"You earn what you work for.", status:"new", score:0 },
+  { word:"easy", tr:"kolay", phonetic:"İZ-i", type:"adjective", example:"Nothing worth having comes easy.", status:"new", score:0 },
+  { word:"edge", tr:"kenar / avantaj", phonetic:"EC", type:"noun", example:"She has an edge over her competitors.", status:"new", score:0 },
+  { word:"educate", tr:"eğitmek", phonetic:"EC-yu-keyt", type:"verb", example:"It is important to educate young people.", status:"new", score:0 },
+  { word:"effort", tr:"çaba", phonetic:"EF-ırt", type:"noun", example:"Put more effort into your work.", status:"new", score:0 },
+  { word:"emotion", tr:"duygu", phonetic:"i-MOW-şın", type:"noun", example:"She could not hide her emotions.", status:"new", score:0 },
+  { word:"employ", tr:"istihdam etmek", phonetic:"im-PLOY", type:"verb", example:"The company employs 500 people.", status:"new", score:0 },
+  { word:"encourage", tr:"teşvik etmek", phonetic:"in-KÖR-ic", type:"verb", example:"Always encourage others to do their best.", status:"new", score:0 },
+  { word:"energy", tr:"enerji", phonetic:"EN-ır-ci", type:"noun", example:"She has a lot of energy in the morning.", status:"new", score:0 },
+  { word:"engage", tr:"ilgilenmek / dahil olmak", phonetic:"in-GEYC", type:"verb", example:"Try to engage with the local community.", status:"new", score:0 },
+  { word:"enjoy", tr:"keyif almak", phonetic:"in-COY", type:"verb", example:"I enjoy reading books in the evening.", status:"new", score:0 },
+  { word:"enormous", tr:"muazzam / çok büyük", phonetic:"i-NOR-mıs", type:"adjective", example:"She has an enormous talent for music.", status:"new", score:0 },
+  { word:"entire", tr:"tüm", phonetic:"in-TAYR", type:"adjective", example:"I spent the entire day studying.", status:"new", score:0 },
+  { word:"environment", tr:"çevre", phonetic:"in-VAY-rın-mınt", type:"noun", example:"We must protect our environment.", status:"new", score:0 },
+  { word:"equal", tr:"eşit", phonetic:"İ-kwıl", type:"adjective", example:"Everyone deserves equal opportunities.", status:"new", score:0 },
+  { word:"escape", tr:"kaçmak", phonetic:"is-KEYP", type:"verb", example:"She escaped from the dangerous situation.", status:"new", score:0 },
+  { word:"essential", tr:"vazgeçilmez", phonetic:"i-SEN-şıl", type:"adjective", example:"Sleep is essential for good health.", status:"new", score:0 },
+  { word:"establish", tr:"kurmak", phonetic:"is-TAB-liş", type:"verb", example:"He established his own business at 25.", status:"new", score:0 },
+  { word:"evaluate", tr:"değerlendirmek", phonetic:"i-VAL-yu-eyt", type:"verb", example:"Evaluate your progress regularly.", status:"new", score:0 },
+  { word:"evidence", tr:"kanıt", phonetic:"EV-i-dıns", type:"noun", example:"There is no evidence of wrongdoing.", status:"new", score:0 },
+  { word:"exact", tr:"tam / kesin", phonetic:"ig-ZAKT", type:"adjective", example:"What is the exact time?", status:"new", score:0 },
+  { word:"examine", tr:"incelemek", phonetic:"ig-ZEM-in", type:"verb", example:"The doctor examined the patient carefully.", status:"new", score:0 },
+  { word:"excellent", tr:"mükemmel", phonetic:"EK-sı-lınt", type:"adjective", example:"She did an excellent job.", status:"new", score:0 },
+  { word:"exchange", tr:"değiş tokuş / değiştirmek", phonetic:"iks-ÇEYNC", type:"noun", example:"Cultural exchange is very valuable.", status:"new", score:0 },
+  { word:"excited", tr:"heyecanlı", phonetic:"ik-SAY-tıd", type:"adjective", example:"The children are excited about the trip.", status:"new", score:0 },
+  { word:"exercise", tr:"egzersiz / alıştırma", phonetic:"EK-sır-sayz", type:"noun", example:"Daily exercise keeps you healthy.", status:"new", score:0 },
+  { word:"exist", tr:"var olmak", phonetic:"ig-ZİST", type:"verb", example:"Do aliens exist?", status:"new", score:0 },
+  { word:"expect", tr:"beklemek", phonetic:"ik-SPEKT", type:"verb", example:"I expect good results from you.", status:"new", score:0 },
+  { word:"experience", tr:"deneyim / yaşamak", phonetic:"ik-SPİR-i-yıns", type:"noun", example:"Experience is the best teacher.", status:"new", score:0 },
+  { word:"explain", tr:"açıklamak", phonetic:"ik-PLEYN", type:"verb", example:"Can you explain this to me?", status:"new", score:0 },
+  { word:"express", tr:"ifade etmek", phonetic:"ik-SPRES", type:"verb", example:"Express your feelings honestly.", status:"new", score:0 },
+  { word:"extra", tr:"ekstra / fazladan", phonetic:"EK-strı", type:"adjective", example:"She always puts in extra effort.", status:"new", score:0 },
+  { word:"fail", tr:"başarısız olmak", phonetic:"FEYL", type:"verb", example:"Don't be afraid to fail.", status:"new", score:0 },
+  { word:"fair", tr:"adil / fuar", phonetic:"FER", type:"adjective", example:"Life is not always fair.", status:"new", score:0 },
+  { word:"familiar", tr:"aşina", phonetic:"fı-MİL-yır", type:"adjective", example:"This place looks familiar.", status:"new", score:0 },
+  { word:"famous", tr:"ünlü", phonetic:"FEY-mıs", type:"adjective", example:"She became famous overnight.", status:"new", score:0 },
+  { word:"fear", tr:"korku / korkmak", phonetic:"FİYR", type:"noun", example:"Face your fears every day.", status:"new", score:0 },
+  { word:"feature", tr:"özellik", phonetic:"Fİ-çır", type:"noun", example:"What is the best feature of this phone?", status:"new", score:0 },
+  { word:"feel", tr:"hissetmek", phonetic:"FİL", type:"verb", example:"How do you feel today?", status:"new", score:0 },
+  { word:"figure", tr:"şekil / anlamak", phonetic:"FİG-yır", type:"noun", example:"I can't figure out this problem.", status:"new", score:0 },
+  { word:"final", tr:"son / nihai", phonetic:"FAY-nıl", type:"adjective", example:"This is my final answer.", status:"new", score:0 },
+  { word:"find", tr:"bulmak", phonetic:"FAYND", type:"verb", example:"Can you find the answer?", status:"new", score:0 },
+  { word:"flexible", tr:"esnek", phonetic:"FLEK-si-bıl", type:"adjective", example:"You need to be flexible in life.", status:"new", score:0 },
+  { word:"focus", tr:"odaklanmak", phonetic:"FOW-kıs", type:"verb", example:"Focus on what truly matters.", status:"new", score:0 },
+  { word:"follow", tr:"takip etmek", phonetic:"FOL-ow", type:"verb", example:"Follow the instructions carefully.", status:"new", score:0 },
+  { word:"force", tr:"zorlamak / güç", phonetic:"FORS", type:"noun", example:"You cannot force someone to change.", status:"new", score:0 },
+  { word:"forget", tr:"unutmak", phonetic:"fır-GET", type:"verb", example:"Don't forget to call me.", status:"new", score:0 },
+  { word:"freedom", tr:"özgürlük", phonetic:"FRİD-ım", type:"noun", example:"Freedom is a fundamental human right.", status:"new", score:0 },
+  { word:"friendly", tr:"arkadaşça / samimi", phonetic:"FREND-li", type:"adjective", example:"She is very friendly to everyone.", status:"new", score:0 },
+  { word:"frustrate", tr:"hayal kırıklığına uğratmak", phonetic:"FRAS-treyt", type:"verb", example:"Traffic jams frustrate everyone.", status:"new", score:0 },
+  { word:"fulfill", tr:"yerine getirmek", phonetic:"ful-FİL", type:"verb", example:"Fulfill your promises.", status:"new", score:0 },
+  { word:"function", tr:"işlev / çalışmak", phonetic:"FANK-şın", type:"noun", example:"What is the function of this button?", status:"new", score:0 },
+  { word:"future", tr:"gelecek", phonetic:"FYU-çır", type:"noun", example:"Think about your future carefully.", status:"new", score:0 },
+  { word:"gain", tr:"kazanmak / elde etmek", phonetic:"GEYN", type:"verb", example:"You will gain experience with time.", status:"new", score:0 },
+  { word:"goal", tr:"hedef", phonetic:"GOWL", type:"noun", example:"Set realistic goals for yourself.", status:"new", score:0 },
+  { word:"grow", tr:"büyümek / gelişmek", phonetic:"GROW", type:"verb", example:"Plants grow faster with sunlight.", status:"new", score:0 },
+  { word:"guess", tr:"tahmin etmek", phonetic:"GES", type:"verb", example:"Can you guess my age?", status:"new", score:0 },
+  { word:"guide", tr:"rehber / yönlendirmek", phonetic:"GAYD", type:"noun", example:"She was our guide through the city.", status:"new", score:0 },
+  { word:"happen", tr:"olmak / gerçekleşmek", phonetic:"HAP-ın", type:"verb", example:"What will happen next?", status:"new", score:0 },
+  { word:"happy", tr:"mutlu", phonetic:"HEP-i", type:"adjective", example:"I am happy with my progress.", status:"new", score:0 },
+  { word:"hard", tr:"zor / sert", phonetic:"HARD", type:"adjective", example:"She works very hard every day.", status:"new", score:0 },
+  { word:"harm", tr:"zarar / zarar vermek", phonetic:"HARM", type:"noun", example:"Do no harm to others.", status:"new", score:0 },
+  { word:"help", tr:"yardım etmek", phonetic:"HELP", type:"verb", example:"Always be willing to help others.", status:"new", score:0 },
+  { word:"honest", tr:"dürüst", phonetic:"ON-ist", type:"adjective", example:"Be honest with yourself.", status:"new", score:0 },
+  { word:"hope", tr:"umut / ummak", phonetic:"HOWP", type:"noun", example:"Never lose hope.", status:"new", score:0 },
+  { word:"human", tr:"insan", phonetic:"HYU-mın", type:"noun", example:"Be kind to every human being.", status:"new", score:0 },
+  { word:"humble", tr:"alçakgönüllü", phonetic:"HAM-bıl", type:"adjective", example:"Stay humble even when you succeed.", status:"new", score:0 },
+  { word:"idea", tr:"fikir", phonetic:"ay-Di-yı", type:"noun", example:"She had a brilliant idea.", status:"new", score:0 },
+  { word:"identify", tr:"tanımlamak / belirlemek", phonetic:"ay-DEN-ti-fay", type:"verb", example:"Can you identify the problem?", status:"new", score:0 },
+  { word:"ignore", tr:"görmezden gelmek", phonetic:"ig-NOR", type:"verb", example:"Don't ignore important messages.", status:"new", score:0 },
+  { word:"imagine", tr:"hayal etmek", phonetic:"i-MAC-in", type:"verb", example:"Imagine a better world.", status:"new", score:0 },
+  { word:"impact", tr:"etki / etkilemek", phonetic:"İM-pakt", type:"noun", example:"Her work had a huge impact on society.", status:"new", score:0 },
+  { word:"improve", tr:"geliştirmek", phonetic:"im-PRUV", type:"verb", example:"She constantly works to improve herself.", status:"new", score:0 },
+  { word:"include", tr:"dahil etmek", phonetic:"in-KLUD", type:"verb", example:"Include everyone in the discussion.", status:"new", score:0 },
+  { word:"increase", tr:"artırmak / artış", phonetic:"in-KRİS", type:"verb", example:"Exercise can increase your energy levels.", status:"new", score:0 },
+  { word:"independent", tr:"bağımsız", phonetic:"in-di-PEN-dınt", type:"adjective", example:"She is a very independent person.", status:"new", score:0 },
+  { word:"inform", tr:"bilgilendirmek", phonetic:"in-FORM", type:"verb", example:"Please inform me of any changes.", status:"new", score:0 },
+  { word:"inspire", tr:"ilham vermek", phonetic:"in-SPAYR", type:"verb", example:"Her story inspired thousands of people.", status:"new", score:0 },
+  { word:"instead", tr:"bunun yerine", phonetic:"in-STED", type:"adverb", example:"Instead of complaining, take action.", status:"new", score:0 },
+  { word:"interest", tr:"ilgi / ilgilenmek", phonetic:"İN-trest", type:"noun", example:"She has a great interest in science.", status:"new", score:0 },
+  { word:"involve", tr:"dahil etmek / içermek", phonetic:"in-VOLV", type:"verb", example:"This project involves a lot of teamwork.", status:"new", score:0 },
+  { word:"issue", tr:"sorun / konu", phonetic:"İŞ-yu", type:"noun", example:"Let's address this issue together.", status:"new", score:0 },
+  { word:"join", tr:"katılmak", phonetic:"COYN", type:"verb", example:"Will you join us for dinner?", status:"new", score:0 },
+  { word:"journey", tr:"yolculuk", phonetic:"CÖR-ni", type:"noun", example:"Life is a beautiful journey.", status:"new", score:0 },
+  { word:"judge", tr:"yargılamak / hâkim", phonetic:"CAC", type:"verb", example:"Don't judge others too quickly.", status:"new", score:0 },
+  { word:"keep", tr:"tutmak / devam etmek", phonetic:"KİP", type:"verb", example:"Keep going, no matter what.", status:"new", score:0 },
+  { word:"key", tr:"anahtar / kilit", phonetic:"Ki", type:"noun", example:"Hard work is the key to success.", status:"new", score:0 },
+  { word:"kind", tr:"tür / nazik", phonetic:"KAYND", type:"adjective", example:"Be kind to everyone you meet.", status:"new", score:0 },
+  { word:"knowledge", tr:"bilgi", phonetic:"NOL-ic", type:"noun", example:"Knowledge is power.", status:"new", score:0 },
+  { word:"lack", tr:"eksiklik / yoksun olmak", phonetic:"LAK", type:"noun", example:"She lacks confidence sometimes.", status:"new", score:0 },
+  { word:"large", tr:"büyük / geniş", phonetic:"LARC", type:"adjective", example:"She has a large collection of books.", status:"new", score:0 },
+  { word:"lead", tr:"liderlik etmek / yol açmak", phonetic:"LİD", type:"verb", example:"A good leader leads by example.", status:"new", score:0 },
+  { word:"learn", tr:"öğrenmek", phonetic:"LÖRN", type:"verb", example:"Never stop learning new things.", status:"new", score:0 },
+  { word:"level", tr:"seviye / düzey", phonetic:"LEV-ıl", type:"noun", example:"What is your language level?", status:"new", score:0 },
+  { word:"likely", tr:"muhtemel", phonetic:"LAYK-li", type:"adjective", example:"She is likely to get the job.", status:"new", score:0 },
+  { word:"limit", tr:"sınır / sınırlamak", phonetic:"LİM-it", type:"noun", example:"Push beyond your limits.", status:"new", score:0 },
+  { word:"listen", tr:"dinlemek", phonetic:"LİS-ın", type:"verb", example:"Listen carefully before you respond.", status:"new", score:0 },
+  { word:"logical", tr:"mantıklı", phonetic:"LOC-i-kıl", type:"adjective", example:"Her argument was very logical.", status:"new", score:0 },
+  { word:"lose", tr:"kaybetmek", phonetic:"LUZ", type:"verb", example:"Don't lose sight of your dreams.", status:"new", score:0 },
+  { word:"love", tr:"sevmek / aşk", phonetic:"LAV", type:"verb", example:"Love what you do.", status:"new", score:0 },
+  { word:"loyal", tr:"sadık", phonetic:"LOY-ıl", type:"adjective", example:"She is a loyal and trustworthy friend.", status:"new", score:0 },
+  { word:"major", tr:"büyük / önemli", phonetic:"MEY-cır", type:"adjective", example:"This is a major breakthrough.", status:"new", score:0 },
+  { word:"manage", tr:"yönetmek / başarmak", phonetic:"MEN-ic", type:"verb", example:"She managed to finish on time.", status:"new", score:0 },
+  { word:"matter", tr:"önemli olmak / konu", phonetic:"MAT-ır", type:"verb", example:"Every decision matters.", status:"new", score:0 },
+  { word:"mean", tr:"demek istemek / ortalama", phonetic:"MİN", type:"verb", example:"What do you mean by that?", status:"new", score:0 },
+  { word:"measure", tr:"ölçmek / ölçü", phonetic:"MEJ-ır", type:"verb", example:"You can't measure success by money alone.", status:"new", score:0 },
+  { word:"mention", tr:"bahsetmek", phonetic:"MEN-şın", type:"verb", example:"She mentioned your name in the meeting.", status:"new", score:0 },
+  { word:"mind", tr:"zihin / önemsemek", phonetic:"MAYND", type:"noun", example:"Open your mind to new ideas.", status:"new", score:0 },
+  { word:"missing", tr:"eksik / kayıp", phonetic:"MİS-ing", type:"adjective", example:"Something is missing from this plan.", status:"new", score:0 },
+  { word:"mistake", tr:"hata", phonetic:"mis-TEYK", type:"noun", example:"Everyone makes mistakes.", status:"new", score:0 },
+  { word:"modern", tr:"modern / çağdaş", phonetic:"MOD-ırn", type:"adjective", example:"She lives in a modern apartment.", status:"new", score:0 },
+  { word:"moment", tr:"an", phonetic:"MOW-mınt", type:"noun", example:"Live in the present moment.", status:"new", score:0 },
+  { word:"motivate", tr:"motive etmek", phonetic:"MOW-ti-veyt", type:"verb", example:"What motivates you to work hard?", status:"new", score:0 },
+  { word:"move", tr:"hareket etmek / taşınmak", phonetic:"MUV", type:"verb", example:"It's time to move forward.", status:"new", score:0 },
+  { word:"natural", tr:"doğal", phonetic:"NAÇ-rıl", type:"adjective", example:"Use natural ingredients when possible.", status:"new", score:0 },
+  { word:"necessary", tr:"gerekli", phonetic:"NES-i-ser-i", type:"adjective", example:"Is it necessary to attend all meetings?", status:"new", score:0 },
+  { word:"negative", tr:"olumsuz", phonetic:"NEG-ı-tiv", type:"adjective", example:"Try to avoid negative thinking.", status:"new", score:0 },
+  { word:"notice", tr:"fark etmek / not", phonetic:"NOW-tis", type:"verb", example:"Did you notice any changes?", status:"new", score:0 },
+  { word:"observe", tr:"gözlemlemek", phonetic:"ıb-ZÖRV", type:"verb", example:"Observe the situation carefully.", status:"new", score:0 },
+  { word:"obtain", tr:"elde etmek", phonetic:"ıb-TEYN", type:"verb", example:"She obtained her degree last year.", status:"new", score:0 },
+  { word:"offer", tr:"teklif / sunmak", phonetic:"OF-ır", type:"verb", example:"He offered me a great opportunity.", status:"new", score:0 },
+  { word:"often", tr:"sıklıkla", phonetic:"OF-ın", type:"adverb", example:"She often reads before bed.", status:"new", score:0 },
+  { word:"option", tr:"seçenek", phonetic:"OP-şın", type:"noun", example:"You have several options to choose from.", status:"new", score:0 },
+  { word:"organize", tr:"organize etmek", phonetic:"OR-gı-nayz", type:"verb", example:"Organize your tasks by priority.", status:"new", score:0 },
+  { word:"overcome", tr:"üstesinden gelmek", phonetic:"ow-vır-KAM", type:"verb", example:"She overcame every obstacle in her path.", status:"new", score:0 },
+  { word:"own", tr:"sahip olmak / kendi", phonetic:"OWN", type:"verb", example:"Own your mistakes and learn from them.", status:"new", score:0 },
+  { word:"patient", tr:"sabırlı / hasta", phonetic:"PEY-şınt", type:"adjective", example:"Be patient with yourself.", status:"new", score:0 },
+  { word:"perform", tr:"gerçekleştirmek / icra etmek", phonetic:"pır-FORM", type:"verb", example:"She performed brilliantly on stage.", status:"new", score:0 },
+  { word:"personal", tr:"kişisel", phonetic:"PÖR-sı-nıl", type:"adjective", example:"Keep personal and professional life separate.", status:"new", score:0 },
+  { word:"plan", tr:"plan / planlamak", phonetic:"PLAN", type:"noun", example:"Make a plan and stick to it.", status:"new", score:0 },
+  { word:"positive", tr:"olumlu / pozitif", phonetic:"POZ-ı-tiv", type:"adjective", example:"Keep a positive attitude always.", status:"new", score:0 },
+  { word:"possible", tr:"mümkün", phonetic:"POS-ı-bıl", type:"adjective", example:"Anything is possible if you believe.", status:"new", score:0 },
+  { word:"power", tr:"güç / iktidar", phonetic:"PAU-ır", type:"noun", example:"Knowledge is the greatest power.", status:"new", score:0 },
+  { word:"practice", tr:"pratik yapmak / uygulama", phonetic:"PRAK-tis", type:"verb", example:"Practice makes perfect.", status:"new", score:0 },
+  { word:"precise", tr:"kesin / dakik", phonetic:"pri-SAYS", type:"adjective", example:"Be precise in your measurements.", status:"new", score:0 },
+  { word:"prefer", tr:"tercih etmek", phonetic:"pri-FÖR", type:"verb", example:"I prefer coffee over tea.", status:"new", score:0 },
+  { word:"prepare", tr:"hazırlamak", phonetic:"pri-PER", type:"verb", example:"Prepare for the best and worst.", status:"new", score:0 },
+  { word:"present", tr:"sunmak / şimdiki / hediye", phonetic:"PREZ-ınt", type:"verb", example:"She presented her ideas clearly.", status:"new", score:0 },
+  { word:"prevent", tr:"önlemek", phonetic:"pri-VENT", type:"verb", example:"Exercise can prevent many diseases.", status:"new", score:0 },
+  { word:"priority", tr:"öncelik", phonetic:"pray-OR-i-ti", type:"noun", example:"Make your health a priority.", status:"new", score:0 },
+  { word:"problem", tr:"sorun", phonetic:"PROB-lım", type:"noun", example:"Every problem has a solution.", status:"new", score:0 },
+  { word:"process", tr:"süreç / işlemek", phonetic:"PROS-es", type:"noun", example:"Learning is a long process.", status:"new", score:0 },
+  { word:"productive", tr:"üretken / verimli", phonetic:"prı-DAK-tiv", type:"adjective", example:"She is most productive in the morning.", status:"new", score:0 },
+  { word:"progress", tr:"ilerleme / ilerlemek", phonetic:"PROG-res", type:"noun", example:"Celebrate your progress every day.", status:"new", score:0 },
+  { word:"project", tr:"proje", phonetic:"PROC-ekt", type:"noun", example:"She is working on an exciting project.", status:"new", score:0 },
+  { word:"protect", tr:"korumak", phonetic:"prı-TEKT", type:"verb", example:"Protect what you love most.", status:"new", score:0 },
+  { word:"prove", tr:"kanıtlamak", phonetic:"PRUV", type:"verb", example:"Prove to yourself that you can do it.", status:"new", score:0 },
+  { word:"provide", tr:"sağlamak", phonetic:"prı-VAYD", type:"verb", example:"She provides great support to her team.", status:"new", score:0 },
+  { word:"purpose", tr:"amaç / hedef", phonetic:"PÖR-pıs", type:"noun", example:"Find your purpose in life.", status:"new", score:0 },
+  { word:"quality", tr:"kalite", phonetic:"KWOL-i-ti", type:"noun", example:"Always choose quality over quantity.", status:"new", score:0 },
+  { word:"question", tr:"soru / sorgulamak", phonetic:"KWES-çın", type:"noun", example:"Never stop asking questions.", status:"new", score:0 },
+  { word:"quickly", tr:"hızlıca", phonetic:"KWİK-li", type:"adverb", example:"She quickly adapted to the new environment.", status:"new", score:0 },
+  { word:"raise", tr:"yükseltmek / büyütmek", phonetic:"REYZ", type:"verb", example:"Raise your standards in life.", status:"new", score:0 },
+  { word:"reach", tr:"ulaşmak", phonetic:"RİÇ", type:"verb", example:"She worked hard to reach her goals.", status:"new", score:0 },
+  { word:"realize", tr:"farkına varmak", phonetic:"Ri-ı-layz", type:"verb", example:"I realize now how important time is.", status:"new", score:0 },
+  { word:"reason", tr:"neden / gerekçe", phonetic:"Ri-zın", type:"noun", example:"Everything happens for a reason.", status:"new", score:0 },
+  { word:"receive", tr:"almak", phonetic:"ri-SİV", type:"verb", example:"She received the award with pride.", status:"new", score:0 },
+  { word:"recognize", tr:"tanımak / fark etmek", phonetic:"REK-ıg-nayz", type:"verb", example:"Do you recognize this face?", status:"new", score:0 },
+  { word:"recommend", tr:"tavsiye etmek", phonetic:"rek-ı-MEND", type:"verb", example:"I strongly recommend this book.", status:"new", score:0 },
+  { word:"reduce", tr:"azaltmak", phonetic:"ri-DUS", type:"verb", example:"Try to reduce screen time daily.", status:"new", score:0 },
+  { word:"reflect", tr:"yansıtmak / düşünmek", phonetic:"ri-FLEKT", type:"verb", example:"Take time to reflect on your actions.", status:"new", score:0 },
+  { word:"relationship", tr:"ilişki", phonetic:"ri-LEY-şın-şip", type:"noun", example:"Build strong relationships with others.", status:"new", score:0 },
+  { word:"relax", tr:"rahatlamak", phonetic:"ri-LAKS", type:"verb", example:"Take time to relax every day.", status:"new", score:0 },
+  { word:"relevant", tr:"alakalı / ilgili", phonetic:"REL-ı-vınt", type:"adjective", example:"Keep your skills relevant.", status:"new", score:0 },
+  { word:"reliable", tr:"güvenilir", phonetic:"ri-LAY-ı-bıl", type:"adjective", example:"She is a reliable and responsible person.", status:"new", score:0 },
+  { word:"remember", tr:"hatırlamak", phonetic:"ri-MEM-bır", type:"verb", example:"Remember why you started.", status:"new", score:0 },
+  { word:"require", tr:"gerektirmek", phonetic:"ri-KWAYR", type:"verb", example:"This job requires strong communication skills.", status:"new", score:0 },
+  { word:"research", tr:"araştırmak / araştırma", phonetic:"Ri-sörc", type:"verb", example:"She spent years researching the topic.", status:"new", score:0 },
+  { word:"resolve", tr:"çözmek / kararlı olmak", phonetic:"ri-ZOLV", type:"verb", example:"Resolve conflicts peacefully.", status:"new", score:0 },
+  { word:"respect", tr:"saygı / saygı göstermek", phonetic:"ri-SPEKT", type:"noun", example:"Earn respect through your actions.", status:"new", score:0 },
+  { word:"respond", tr:"cevap vermek", phonetic:"ri-SPOND", type:"verb", example:"Respond to messages promptly.", status:"new", score:0 },
+  { word:"responsibility", tr:"sorumluluk", phonetic:"ri-spon-si-BİL-i-ti", type:"noun", example:"Take responsibility for your actions.", status:"new", score:0 },
+  { word:"result", tr:"sonuç", phonetic:"ri-ZALT", type:"noun", example:"Hard work brings great results.", status:"new", score:0 },
+  { word:"rise", tr:"yükselmek / artmak", phonetic:"RAYZ", type:"verb", example:"She rose to the top through hard work.", status:"new", score:0 },
+  { word:"risk", tr:"risk / risk almak", phonetic:"RİSK", type:"noun", example:"Take calculated risks in life.", status:"new", score:0 },
+  { word:"role", tr:"rol", phonetic:"ROWL", type:"noun", example:"She plays an important role in the team.", status:"new", score:0 },
+  { word:"routine", tr:"rutin", phonetic:"ru-TİN", type:"noun", example:"A good morning routine sets the day.", status:"new", score:0 },
+  { word:"sacrifice", tr:"feda etmek / fedakârlık", phonetic:"SAK-ri-fays", type:"verb", example:"She sacrificed her time for her family.", status:"new", score:0 },
+  { word:"safe", tr:"güvenli", phonetic:"SEYF", type:"adjective", example:"Make sure you feel safe and secure.", status:"new", score:0 },
+  { word:"satisfy", tr:"tatmin etmek", phonetic:"SAT-is-fay", type:"verb", example:"Her work never fails to satisfy.", status:"new", score:0 },
+  { word:"sensitive", tr:"hassas / duyarlı", phonetic:"SEN-si-tiv", type:"adjective", example:"She is very sensitive to others' feelings.", status:"new", score:0 },
+  { word:"serious", tr:"ciddi", phonetic:"Sİ-ri-ıs", type:"adjective", example:"This is a serious matter.", status:"new", score:0 },
+  { word:"share", tr:"paylaşmak", phonetic:"ŞER", type:"verb", example:"Share your knowledge with others.", status:"new", score:0 },
+  { word:"significant", tr:"önemli / anlamlı", phonetic:"sig-NİF-i-kınt", type:"adjective", example:"This is a significant achievement.", status:"new", score:0 },
+  { word:"simple", tr:"basit / sade", phonetic:"SİM-pıl", type:"adjective", example:"Keep things simple.", status:"new", score:0 },
+  { word:"skill", tr:"beceri", phonetic:"SKİL", type:"noun", example:"Develop new skills every year.", status:"new", score:0 },
+  { word:"smart", tr:"akıllı", phonetic:"SMART", type:"adjective", example:"Work smart, not just hard.", status:"new", score:0 },
+  { word:"solve", tr:"çözmek", phonetic:"SOLV", type:"verb", example:"She can solve problems quickly.", status:"new", score:0 },
+  { word:"specific", tr:"özel / belirli", phonetic:"spi-SİF-ik", type:"adjective", example:"Be specific about what you want.", status:"new", score:0 },
+  { word:"stable", tr:"istikrarlı", phonetic:"STEY-bıl", type:"adjective", example:"Build a stable financial foundation.", status:"new", score:0 },
+  { word:"standard", tr:"standart / ölçüt", phonetic:"STAN-dırd", type:"noun", example:"Set high standards for yourself.", status:"new", score:0 },
+  { word:"strategy", tr:"strateji", phonetic:"STRAT-ı-ci", type:"noun", example:"What is your strategy for success?", status:"new", score:0 },
+  { word:"strength", tr:"güç / kuvvet", phonetic:"STRENKTH", type:"noun", example:"Turn your weaknesses into strengths.", status:"new", score:0 },
+  { word:"stress", tr:"stres / baskı", phonetic:"STRES", type:"noun", example:"Manage your stress with exercise.", status:"new", score:0 },
+  { word:"succeed", tr:"başarmak", phonetic:"sık-SİD", type:"verb", example:"Believe that you will succeed.", status:"new", score:0 },
+  { word:"sudden", tr:"ani / beklenmedik", phonetic:"SAD-ın", type:"adjective", example:"The sudden change surprised everyone.", status:"new", score:0 },
+  { word:"support", tr:"desteklemek / destek", phonetic:"sı-PORT", type:"verb", example:"Support others on their journey.", status:"new", score:0 },
+  { word:"surprising", tr:"şaşırtıcı", phonetic:"sır-PRAYZ-ing", type:"adjective", example:"The results were surprising.", status:"new", score:0 },
+  { word:"surround", tr:"çevrelemek", phonetic:"sı-RAUND", type:"verb", example:"Surround yourself with positive people.", status:"new", score:0 },
+  { word:"talent", tr:"yetenek", phonetic:"TAL-ınt", type:"noun", example:"Everyone has a unique talent.", status:"new", score:0 },
+  { word:"tend", tr:"eğiliminde olmak", phonetic:"TEND", type:"verb", example:"She tends to work late at night.", status:"new", score:0 },
+  { word:"thankful", tr:"minnettarlık", phonetic:"THANK-fıl", type:"adjective", example:"Be thankful for what you have.", status:"new", score:0 },
+  { word:"think", tr:"düşünmek", phonetic:"THİNK", type:"verb", example:"Think before you speak.", status:"new", score:0 },
+  { word:"thoughtful", tr:"düşünceli / anlayışlı", phonetic:"THOT-fıl", type:"adjective", example:"She is always thoughtful and kind.", status:"new", score:0 },
+  { word:"tough", tr:"zor / sert / dayanıklı", phonetic:"TAF", type:"adjective", example:"Stay tough during difficult times.", status:"new", score:0 },
+  { word:"trust", tr:"güvenmek / güven", phonetic:"TRAST", type:"verb", example:"Trust the process.", status:"new", score:0 },
+  { word:"try", tr:"denemek / çabalamak", phonetic:"TRAY", type:"verb", example:"Always try your best.", status:"new", score:0 },
+  { word:"understand", tr:"anlamak", phonetic:"an-dır-STAND", type:"verb", example:"Do you understand what I mean?", status:"new", score:0 },
+  { word:"unique", tr:"eşsiz / benzersiz", phonetic:"yu-NİK", type:"adjective", example:"Everyone is unique in their own way.", status:"new", score:0 },
+  { word:"update", tr:"güncellemek", phonetic:"AP-deyt", type:"verb", example:"Please update your password regularly.", status:"new", score:0 },
+  { word:"use", tr:"kullanmak", phonetic:"YUZ", type:"verb", example:"Use your time wisely.", status:"new", score:0 },
+  { word:"various", tr:"çeşitli / farklı", phonetic:"VER-i-ıs", type:"adjective", example:"She has worked in various fields.", status:"new", score:0 },
+  { word:"vision", tr:"vizyon / görüş", phonetic:"VİJ-ın", type:"noun", example:"She has a clear vision for the future.", status:"new", score:0 },
+  { word:"vital", tr:"hayati / çok önemli", phonetic:"VAY-tıl", type:"adjective", example:"Sleep is vital for your health.", status:"new", score:0 },
+  { word:"volunteer", tr:"gönüllü", phonetic:"vol-ın-TİYR", type:"noun", example:"She volunteers at the local shelter.", status:"new", score:0 },
+  { word:"weakness", tr:"zayıflık", phonetic:"WİK-nıs", type:"noun", example:"Knowing your weakness is a strength.", status:"new", score:0 },
+  { word:"wealth", tr:"zenginlik / refah", phonetic:"WELTH", type:"noun", example:"True wealth is health and happiness.", status:"new", score:0 },
+  { word:"will", tr:"irade / istemek", phonetic:"WİL", type:"noun", example:"Where there is a will, there is a way.", status:"new", score:0 },
+  { word:"wisdom", tr:"bilgelik", phonetic:"WİZ-dım", type:"noun", example:"Wisdom comes with experience.", status:"new", score:0 },
+  { word:"wonder", tr:"merak etmek / hayranlık", phonetic:"WAN-dır", type:"verb", example:"I wonder what the future holds.", status:"new", score:0 },
+  { word:"worry", tr:"endişelenmek", phonetic:"WÖR-i", type:"verb", example:"Don't worry about things you can't control.", status:"new", score:0 },
+  { word:"worth", tr:"değer / değerinde", phonetic:"WÖRTH", type:"adjective", example:"Every effort is worth it in the end.", status:"new", score:0 },
+  { word:"yield", tr:"vermek / boyun eğmek", phonetic:"YİLD", type:"verb", example:"Hard work always yields good results.", status:"new", score:0 },
+  { word:"zone", tr:"bölge / alan", phonetic:"ZOWN", type:"noun", example:"Stay in your comfort zone or leave it.", status:"new", score:0 },
+  { word:"abundance", tr:"bolluk", phonetic:"ı-BAN-dıns", type:"noun", example:"She lives in abundance and gratitude.", status:"new", score:0 },
+  { word:"accelerate", tr:"hızlandırmak", phonetic:"ık-SEL-ı-reyt", type:"verb", example:"Technology continues to accelerate.", status:"new", score:0 },
+  { word:"accommodate", tr:"uyum sağlamak", phonetic:"ı-KOM-ı-deyt", type:"verb", example:"We can accommodate all your needs.", status:"new", score:0 },
+  { word:"accumulate", tr:"biriktirmek", phonetic:"ı-KYU-myu-leyt", type:"verb", example:"She accumulated wealth through investing.", status:"new", score:0 },
+  { word:"acknowledge", tr:"kabul etmek / tanımak", phonetic:"ık-NOL-ic", type:"verb", example:"Acknowledge your mistakes and move on.", status:"new", score:0 },
+  { word:"adapt", tr:"uyum sağlamak", phonetic:"ı-DAPT", type:"verb", example:"Successful people adapt quickly to change.", status:"new", score:0 },
+  { word:"adequate", tr:"yeterli", phonetic:"AD-i-kwit", type:"adjective", example:"Is the budget adequate for the project?", status:"new", score:0 },
+  { word:"admire", tr:"hayran olmak", phonetic:"ıd-MAYR", type:"verb", example:"I admire her dedication and hard work.", status:"new", score:0 },
+  { word:"advocate", tr:"savunmak / savunucu", phonetic:"AD-vı-keyt", type:"verb", example:"She advocates for equal rights.", status:"new", score:0 },
+  { word:"aesthetic", tr:"estetik", phonetic:"is-TET-ik", type:"adjective", example:"The design has a beautiful aesthetic.", status:"new", score:0 },
+  { word:"affirm", tr:"doğrulamak / onaylamak", phonetic:"ı-FÖRM", type:"verb", example:"Affirm your goals every morning.", status:"new", score:0 },
+  { word:"aggravate", tr:"kötüleştirmek / kızdırmak", phonetic:"AG-rı-veyt", type:"verb", example:"Don't aggravate the situation further.", status:"new", score:0 },
+  { word:"agile", tr:"çevik / hızlı", phonetic:"AC-ıl", type:"adjective", example:"An agile mind adapts to any challenge.", status:"new", score:0 },
+  { word:"allocate", tr:"ayırmak / tahsis etmek", phonetic:"AL-ı-keyt", type:"verb", example:"Allocate time for rest and recovery.", status:"new", score:0 },
+  { word:"alter", tr:"değiştirmek", phonetic:"OL-tır", type:"verb", example:"Nothing can alter her determination.", status:"new", score:0 },
+  { word:"ambiguity", tr:"belirsizlik", phonetic:"am-bi-GYU-i-ti", type:"noun", example:"Avoid ambiguity in your communication.", status:"new", score:0 },
+  { word:"amplify", tr:"büyütmek / güçlendirmek", phonetic:"AM-pli-fay", type:"verb", example:"Social media amplifies your message.", status:"new", score:0 },
+  { word:"analyze", tr:"analiz etmek", phonetic:"AN-ı-layz", type:"verb", example:"Analyze the data before making decisions.", status:"new", score:0 },
+  { word:"anticipate", tr:"öngörmek / beklemek", phonetic:"an-TİS-i-peyt", type:"verb", example:"Anticipate problems before they arise.", status:"new", score:0 },
+  { word:"articulate", tr:"ifade etmek / açık seçik", phonetic:"ar-TİK-yu-lıt", type:"verb", example:"She can articulate her ideas clearly.", status:"new", score:0 },
+  { word:"aspire", tr:"arzulamak / özlem duymak", phonetic:"ıs-PAYR", type:"verb", example:"She aspires to be a great leader.", status:"new", score:0 },
+  { word:"assertive", tr:"kararlı / kendinden emin", phonetic:"ı-SÖR-tiv", type:"adjective", example:"Be assertive about your boundaries.", status:"new", score:0 },
+  { word:"assess", tr:"değerlendirmek", phonetic:"ı-SES", type:"verb", example:"Assess the risks before proceeding.", status:"new", score:0 },
+  { word:"attribute", tr:"nitelik / atfetmek", phonetic:"AT-ri-byut", type:"noun", example:"She has many positive attributes.", status:"new", score:0 },
+  { word:"authentic", tr:"özgün / gerçek", phonetic:"o-THEN-tik", type:"adjective", example:"Be authentic in everything you do.", status:"new", score:0 },
+  { word:"autonomy", tr:"özerklik / bağımsızlık", phonetic:"o-TON-ı-mi", type:"noun", example:"She values her autonomy greatly.", status:"new", score:0 },
+  { word:"benchmark", tr:"kriter / referans noktası", phonetic:"BENCH-mark", type:"noun", example:"Set a benchmark for your performance.", status:"new", score:0 },
+  { word:"breakthrough", tr:"çığır açan gelişme", phonetic:"BREYK-thru", type:"noun", example:"This discovery is a major breakthrough.", status:"new", score:0 },
+  { word:"broaden", tr:"genişletmek", phonetic:"BROD-ın", type:"verb", example:"Travel can broaden your perspective.", status:"new", score:0 },
+  { word:"capacity", tr:"kapasite / yetenek", phonetic:"kı-PAS-i-ti", type:"noun", example:"She has the capacity to lead.", status:"new", score:0 },
+  { word:"capture", tr:"yakalamak / ele geçirmek", phonetic:"KAP-çır", type:"verb", example:"The photo captured a beautiful moment.", status:"new", score:0 },
+  { word:"clarity", tr:"açıklık / berraklık", phonetic:"KLAR-i-ti", type:"noun", example:"Seek clarity in your thoughts and goals.", status:"new", score:0 },
+  { word:"collaborate", tr:"iş birliği yapmak", phonetic:"kı-LAB-ı-reyt", type:"verb", example:"We need to collaborate to succeed.", status:"new", score:0 },
+  { word:"commitment", tr:"bağlılık / taahhüt", phonetic:"kı-MİT-mınt", type:"noun", example:"Success requires total commitment.", status:"new", score:0 },
+  { word:"compelling", tr:"zorlayıcı / ilgi çekici", phonetic:"kım-PEL-ing", type:"adjective", example:"She told a compelling story.", status:"new", score:0 },
+  { word:"competent", tr:"yetkin / ehil", phonetic:"KOM-pi-tınt", type:"adjective", example:"She is highly competent in her field.", status:"new", score:0 },
+  { word:"competitive", tr:"rekabetçi", phonetic:"kım-PET-i-tiv", type:"adjective", example:"The job market is very competitive.", status:"new", score:0 },
+  { word:"compose", tr:"oluşturmak / bestelemek", phonetic:"kım-POWZ", type:"verb", example:"She composed a beautiful piece of music.", status:"new", score:0 },
+  { word:"comprehend", tr:"kavramak / anlamak", phonetic:"kom-pri-HEND", type:"verb", example:"It is hard to comprehend the universe.", status:"new", score:0 },
+  { word:"concentrate", tr:"odaklanmak / konsantre olmak", phonetic:"KON-sın-treyt", type:"verb", example:"Concentrate on your breathing.", status:"new", score:0 },
+  { word:"conclude", tr:"sonuçlandırmak", phonetic:"kın-KLUD", type:"verb", example:"She concluded the report with a summary.", status:"new", score:0 },
+  { word:"conquer", tr:"fethetmek / yenmek", phonetic:"KON-kır", type:"verb", example:"Conquer your fears one by one.", status:"new", score:0 },
+  { word:"conscious", tr:"bilinçli / farkında", phonetic:"KON-şıs", type:"adjective", example:"Be conscious of your daily habits.", status:"new", score:0 },
+  { word:"construct", tr:"inşa etmek / kurmak", phonetic:"kın-STRAKT", type:"verb", example:"She constructed a solid argument.", status:"new", score:0 },
+  { word:"contemplate", tr:"düşünmek / derin düşünceye dalmak", phonetic:"KON-tım-pleyt", type:"verb", example:"Take time to contemplate your future.", status:"new", score:0 },
+  { word:"context", tr:"bağlam", phonetic:"KON-tekst", type:"noun", example:"Always consider the context.", status:"new", score:0 },
+  { word:"contribute", tr:"katkıda bulunmak", phonetic:"kın-TRİBYUT", type:"verb", example:"Contribute to something bigger than yourself.", status:"new", score:0 },
+  { word:"controversial", tr:"tartışmalı", phonetic:"kon-trı-VÖR-şıl", type:"adjective", example:"This is a controversial topic.", status:"new", score:0 },
+  { word:"cope", tr:"başa çıkmak", phonetic:"KOWP", type:"verb", example:"She learned to cope with stress.", status:"new", score:0 },
+  { word:"creative", tr:"yaratıcı", phonetic:"kri-EY-tiv", type:"adjective", example:"Creative thinking solves complex problems.", status:"new", score:0 },
+  { word:"credibility", tr:"güvenilirlik", phonetic:"kred-i-BİL-i-ti", type:"noun", example:"Build your credibility over time.", status:"new", score:0 },
+  { word:"cultivate", tr:"geliştirmek / yetiştirmek", phonetic:"KAL-ti-veyt", type:"verb", example:"Cultivate good habits daily.", status:"new", score:0 },
+  { word:"decisive", tr:"kararlı", phonetic:"di-SAY-siv", type:"adjective", example:"A good leader must be decisive.", status:"new", score:0 },
+  { word:"dedicated", tr:"kendini adamış", phonetic:"DED-i-keyt-ıd", type:"adjective", example:"She is a dedicated and hardworking person.", status:"new", score:0 },
+  { word:"deliberate", tr:"kasıtlı / dikkatli", phonetic:"di-LİB-ır-it", type:"adjective", example:"Make deliberate choices in life.", status:"new", score:0 },
+  { word:"demonstrate", tr:"göstermek / kanıtlamak", phonetic:"DEM-ın-streyt", type:"verb", example:"Demonstrate your skills through action.", status:"new", score:0 },
+  { word:"discipline", tr:"disiplin", phonetic:"DİS-i-plin", type:"noun", example:"Discipline is the bridge between goals and achievement.", status:"new", score:0 },
+  { word:"diligent", tr:"çalışkan / özverili", phonetic:"DİL-i-cınt", type:"adjective", example:"She is a diligent student.", status:"new", score:0 },
+  { word:"dynamic", tr:"dinamik / enerjik", phonetic:"day-NAM-ik", type:"adjective", example:"She has a dynamic and energetic personality.", status:"new", score:0 },
+  { word:"eager", tr:"istekli / hevesli", phonetic:"İ-gır", type:"adjective", example:"She is eager to learn new things.", status:"new", score:0 },
+  { word:"elaborate", tr:"ayrıntılı / açıklamak", phonetic:"i-LAB-ı-rıt", type:"verb", example:"Can you elaborate on your idea?", status:"new", score:0 },
+  { word:"embrace", tr:"kucaklamak / benimsemek", phonetic:"im-BREYS", type:"verb", example:"Embrace change with an open mind.", status:"new", score:0 },
+  { word:"emerge", tr:"ortaya çıkmak", phonetic:"i-MÖRC", type:"verb", example:"A new talent emerged from the competition.", status:"new", score:0 },
+  { word:"empower", tr:"güçlendirmek / yetki vermek", phonetic:"im-PAU-ır", type:"verb", example:"Education empowers people to achieve more.", status:"new", score:0 },
+  { word:"endure", tr:"dayanmak / devam etmek", phonetic:"in-DYU-ır", type:"verb", example:"She endured hardship with grace.", status:"new", score:0 },
+  { word:"enhance", tr:"geliştirmek / artırmak", phonetic:"in-HANS", type:"verb", example:"Reading enhances your vocabulary.", status:"new", score:0 },
+  { word:"enthusiasm", tr:"coşku / heves", phonetic:"in-THYUzi-az-ım", type:"noun", example:"She approaches life with enthusiasm.", status:"new", score:0 },
+  { word:"excel", tr:"üstün olmak / parlamak", phonetic:"ik-SEL", type:"verb", example:"She excels in every subject she studies.", status:"new", score:0 },
+  { word:"exceptional", tr:"olağanüstü", phonetic:"ik-SEP-şı-nıl", type:"adjective", example:"Her performance was truly exceptional.", status:"new", score:0 },
+  { word:"execute", tr:"uygulamak / icra etmek", phonetic:"EK-si-kyut", type:"verb", example:"Execute your plan with precision.", status:"new", score:0 },
+  { word:"expand", tr:"genişletmek / büyütmek", phonetic:"ik-SPEND", type:"verb", example:"Expand your comfort zone regularly.", status:"new", score:0 },
+  { word:"explicit", tr:"açık / net", phonetic:"ik-SPLIS-it", type:"adjective", example:"Be explicit about your expectations.", status:"new", score:0 },
+  { word:"exploit", tr:"sömürmek / fırsattan yararlanmak", phonetic:"ik-SPLOYT", type:"verb", example:"Don't exploit others for personal gain.", status:"new", score:0 },
+  { word:"facilitate", tr:"kolaylaştırmak", phonetic:"fı-SİL-i-teyt", type:"verb", example:"Good tools facilitate better work.", status:"new", score:0 },
+  { word:"flourish", tr:"gelişmek / büyümek", phonetic:"FLAUR-iş", type:"verb", example:"She flourishes in challenging environments.", status:"new", score:0 },
+  { word:"formulate", tr:"formüle etmek", phonetic:"FOR-myu-leyt", type:"verb", example:"Formulate a clear plan of action.", status:"new", score:0 },
+  { word:"foundation", tr:"temel / kuruluş", phonetic:"faun-DEY-şın", type:"noun", example:"Build a strong foundation for your goals.", status:"new", score:0 },
+  { word:"fundamental", tr:"temel / esas", phonetic:"fan-dı-MEN-tıl", type:"adjective", example:"Trust is fundamental in any relationship.", status:"new", score:0 },
+  { word:"generate", tr:"üretmek / oluşturmak", phonetic:"CEN-ı-reyt", type:"verb", example:"Generate positive energy around you.", status:"new", score:0 },
+  { word:"gratitude", tr:"şükran / minnet", phonetic:"GRAT-i-tyud", type:"noun", example:"Practice gratitude every single day.", status:"new", score:0 },
+  { word:"harmony", tr:"uyum / ahenk", phonetic:"HAR-mı-ni", type:"noun", example:"Live in harmony with those around you.", status:"new", score:0 },
+  { word:"highlight", tr:"vurgulamak / öne çıkarmak", phonetic:"HAY-layt", type:"verb", example:"Highlight your strongest achievements.", status:"new", score:0 },
+  { word:"hypothesis", tr:"hipotez / varsayım", phonetic:"hay-POT-ı-sis", type:"noun", example:"Test your hypothesis before concluding.", status:"new", score:0 },
+  { word:"ideal", tr:"ideal / mükemmel", phonetic:"ay-Dİ-ıl", type:"adjective", example:"This is an ideal opportunity for growth.", status:"new", score:0 },
+  { word:"implement", tr:"uygulamak / hayata geçirmek", phonetic:"İM-plı-mınt", type:"verb", example:"Implement the plan step by step.", status:"new", score:0 },
+  { word:"imply", tr:"ima etmek", phonetic:"im-PLAY", type:"verb", example:"What does this data imply?", status:"new", score:0 },
+  { word:"innovative", tr:"yenilikçi", phonetic:"İN-ı-vey-tiv", type:"adjective", example:"She has an innovative approach to problems.", status:"new", score:0 },
+  { word:"insight", tr:"içgörü / kavrayış", phonetic:"İN-sayt", type:"noun", example:"She has deep insight into human behavior.", status:"new", score:0 },
+  { word:"integrate", tr:"entegre etmek / bütünleştirmek", phonetic:"İN-ti-greyt", type:"verb", example:"Integrate new habits into your daily life.", status:"new", score:0 },
+  { word:"integrity", tr:"dürüstlük / bütünlük", phonetic:"in-TEG-ri-ti", type:"noun", example:"Act with integrity in all situations.", status:"new", score:0 },
+  { word:"intentional", tr:"kasıtlı / bilinçli", phonetic:"in-TEN-şı-nıl", type:"adjective", example:"Be intentional with your daily choices.", status:"new", score:0 },
+  { word:"interpret", tr:"yorumlamak", phonetic:"in-TÖR-prit", type:"verb", example:"How do you interpret this situation?", status:"new", score:0 },
+  { word:"intuition", tr:"sezgi", phonetic:"in-tyu-İŞ-ın", type:"noun", example:"Trust your intuition when making decisions.", status:"new", score:0 },
+  { word:"leverage", tr:"kaldıraç etkisi / kullanmak", phonetic:"LEV-ır-ic", type:"verb", example:"Leverage your strengths to succeed.", status:"new", score:0 },
+  { word:"maintain", tr:"sürdürmek / korumak", phonetic:"meyn-TEYN", type:"verb", example:"Maintain a healthy work-life balance.", status:"new", score:0 },
+  { word:"maximize", tr:"en üst düzeye çıkarmak", phonetic:"MAK-si-mayz", type:"verb", example:"Maximize your potential every day.", status:"new", score:0 },
+  { word:"meaningful", tr:"anlamlı / önemli", phonetic:"MİN-ing-fıl", type:"adjective", example:"Build meaningful relationships.", status:"new", score:0 },
+  { word:"mentality", tr:"zihniyet / düşünce yapısı", phonetic:"men-TAL-i-ti", type:"noun", example:"Adopt a growth mentality.", status:"new", score:0 },
+  { word:"methodology", tr:"yöntem / metodoloji", phonetic:"meth-ı-DOL-ı-ci", type:"noun", example:"Her research methodology is solid.", status:"new", score:0 },
+  { word:"mindset", tr:"zihniyet / bakış açısı", phonetic:"MAYND-set", type:"noun", example:"A positive mindset changes everything.", status:"new", score:0 },
+  { word:"minimize", tr:"en aza indirmek", phonetic:"MİN-i-mayz", type:"verb", example:"Minimize distractions while working.", status:"new", score:0 },
+  { word:"navigate", tr:"yol bulmak / yönlendirmek", phonetic:"NAV-i-geyt", type:"verb", example:"Learn to navigate challenges with ease.", status:"new", score:0 },
+  { word:"nurture", tr:"beslemek / geliştirmek", phonetic:"NÖR-çır", type:"verb", example:"Nurture your talents every day.", status:"new", score:0 },
+  { word:"objective", tr:"nesnel / amaç", phonetic:"ıb-CEK-tiv", type:"noun", example:"Define clear objectives for your project.", status:"new", score:0 },
+  { word:"optimistic", tr:"iyimser", phonetic:"op-ti-MİS-tik", type:"adjective", example:"Stay optimistic even in hard times.", status:"new", score:0 },
+  { word:"outcome", tr:"sonuç / çıktı", phonetic:"AUT-kam", type:"noun", example:"The outcome depends on your choices.", status:"new", score:0 },
+  { word:"outstanding", tr:"olağanüstü / mükemmel", phonetic:"aut-STAND-ing", type:"adjective", example:"She gave an outstanding performance.", status:"new", score:0 },
+  { word:"overcome", tr:"üstesinden gelmek", phonetic:"ow-vır-KAM", type:"verb", example:"She overcame great challenges.", status:"new", score:0 },
+  { word:"passionate", tr:"tutkulu", phonetic:"PAŞ-ı-nıt", type:"adjective", example:"She is passionate about her work.", status:"new", score:0 },
+  { word:"perceive", tr:"algılamak / kavramak", phonetic:"pır-SİV", type:"verb", example:"How you perceive life shapes your reality.", status:"new", score:0 },
+  { word:"persistence", tr:"ısrar / azim", phonetic:"pır-SİS-tıns", type:"noun", example:"Persistence is the key to long-term success.", status:"new", score:0 },
+  { word:"potential", tr:"potansiyel / olası", phonetic:"pı-TEN-şıl", type:"noun", example:"Unlock your true potential every day.", status:"new", score:0 },
+  { word:"pragmatic", tr:"pragmatik / pratik", phonetic:"prag-MAT-ik", type:"adjective", example:"She has a pragmatic approach to problems.", status:"new", score:0 },
+  { word:"precise", tr:"kesin / hassas", phonetic:"pri-SAYS", type:"adjective", example:"Be precise in your language.", status:"new", score:0 },
+  { word:"proactive", tr:"proaktif / öngörülü", phonetic:"pro-AK-tiv", type:"adjective", example:"Be proactive instead of reactive.", status:"new", score:0 },
+  { word:"profound", tr:"derin / köklü", phonetic:"prı-FAUND", type:"adjective", example:"She had a profound impact on my life.", status:"new", score:0 },
+  { word:"progressive", tr:"ilerici / kademeli", phonetic:"prı-GRES-iv", type:"adjective", example:"She supports progressive ideas.", status:"new", score:0 },
+  { word:"promote", tr:"tanıtmak / terfi ettirmek", phonetic:"prı-MOWT", type:"verb", example:"She was promoted to senior manager.", status:"new", score:0 },
+  { word:"propel", tr:"itmek / ilerletmek", phonetic:"prı-PEL", type:"verb", example:"Passion propels you toward your goals.", status:"new", score:0 },
+  { word:"rational", tr:"rasyonel / mantıklı", phonetic:"RAŞ-ı-nıl", type:"adjective", example:"Make rational decisions under pressure.", status:"new", score:0 },
+  { word:"refine", tr:"geliştirmek / mükemmelleştirmek", phonetic:"ri-FAYN", type:"verb", example:"Refine your skills through daily practice.", status:"new", score:0 },
+  { word:"reinforce", tr:"pekiştirmek / güçlendirmek", phonetic:"ri-in-FORS", type:"verb", example:"Positive habits reinforce success.", status:"new", score:0 },
+  { word:"remarkable", tr:"dikkat çekici / olağanüstü", phonetic:"ri-MAR-kı-bıl", type:"adjective", example:"She achieved remarkable results.", status:"new", score:0 },
+  { word:"resilience", tr:"dayanıklılık", phonetic:"ri-ZİL-i-yıns", type:"noun", example:"Resilience is built through adversity.", status:"new", score:0 },
+  { word:"resourceful", tr:"becerikli / kurnaz", phonetic:"ri-SORS-fıl", type:"adjective", example:"She is a resourceful problem-solver.", status:"new", score:0 },
+  { word:"responsive", tr:"duyarlı / hızlı yanıt veren", phonetic:"ri-SPON-siv", type:"adjective", example:"Be responsive to feedback.", status:"new", score:0 },
+  { word:"rigorous", tr:"titiz / sıkı", phonetic:"RİG-ır-ıs", type:"adjective", example:"She follows a rigorous training routine.", status:"new", score:0 },
+  { word:"robust", tr:"güçlü / sağlam", phonetic:"row-BAST", type:"adjective", example:"She has built a robust business model.", status:"new", score:0 },
+  { word:"sacrifice", tr:"feda etmek", phonetic:"SAK-ri-fays", type:"verb", example:"She sacrificed comfort for success.", status:"new", score:0 },
+  { word:"scrutinize", tr:"incelemek / titizce incelemek", phonetic:"SKRUTi-nayz", type:"verb", example:"Scrutinize every detail before signing.", status:"new", score:0 },
+  { word:"self-awareness", tr:"öz farkındalık", phonetic:"self ı-WER-nıs", type:"noun", example:"Self-awareness leads to personal growth.", status:"new", score:0 },
+  { word:"sophisticated", tr:"sofistike / karmaşık", phonetic:"sı-FİS-ti-keyt-ıd", type:"adjective", example:"She has a sophisticated taste in art.", status:"new", score:0 },
+  { word:"spontaneous", tr:"kendiliğinden / içten gelen", phonetic:"spon-TEY-ni-ıs", type:"adjective", example:"She has a spontaneous and joyful personality.", status:"new", score:0 },
+  { word:"stimulate", tr:"uyarmak / harekete geçirmek", phonetic:"STİM-yu-leyt", type:"verb", example:"Reading stimulates the brain.", status:"new", score:0 },
+  { word:"strategic", tr:"stratejik", phonetic:"strı-Tİ-cik", type:"adjective", example:"Make strategic decisions for the future.", status:"new", score:0 },
+  { word:"substantial", tr:"önemli / büyük miktarda", phonetic:"sıb-STAN-şıl", type:"adjective", example:"She made a substantial contribution.", status:"new", score:0 },
+  { word:"sustainability", tr:"sürdürülebilirlik", phonetic:"sıs-teyn-ı-BİL-i-ti", type:"noun", example:"Focus on sustainability in business.", status:"new", score:0 },
+  { word:"systematic", tr:"sistematik", phonetic:"sis-tı-MAT-ik", type:"adjective", example:"Follow a systematic approach to learning.", status:"new", score:0 },
+  { word:"thorough", tr:"titiz / kapsamlı", phonetic:"THÖ-rı", type:"adjective", example:"She is thorough in all her research.", status:"new", score:0 },
+  { word:"tolerance", tr:"hoşgörü / tolerans", phonetic:"TOL-ır-ıns", type:"noun", example:"Practice tolerance and understanding.", status:"new", score:0 },
+  { word:"transform", tr:"dönüştürmek", phonetic:"trans-FORM", type:"verb", example:"Transform your habits, transform your life.", status:"new", score:0 },
+  { word:"transparent", tr:"şeffaf", phonetic:"trans-PER-ınt", type:"adjective", example:"Be transparent in your communication.", status:"new", score:0 },
+  { word:"ultimate", tr:"nihai / en üst", phonetic:"AL-ti-mit", type:"adjective", example:"What is your ultimate goal?", status:"new", score:0 },
+  { word:"versatile", tr:"çok yönlü", phonetic:"VÖR-sı-tıl", type:"adjective", example:"She is a versatile and adaptable person.", status:"new", score:0 },
+  { word:"wholesome", tr:"sağlıklı / iyi", phonetic:"HOWL-sım", type:"adjective", example:"Eat wholesome food every day.", status:"new", score:0 },
+  { word:"zeal", tr:"şevk / gayret", phonetic:"ZİL", type:"noun", example:"She approaches work with great zeal.", status:"new", score:0 },
+  { word:"agenda", tr:"gündem", phonetic:"ı-CEN-dı", type:"noun", example:"What is on the agenda today?", status:"new", score:0 },
+  { word:"analysis", tr:"analiz", phonetic:"ı-NAL-i-sis", type:"noun", example:"The analysis revealed important trends.", status:"new", score:0 },
+  { word:"annual", tr:"yıllık", phonetic:"AN-yu-ıl", type:"adjective", example:"She received an annual bonus.", status:"new", score:0 },
+  { word:"anticipation", tr:"beklenti / öngörü", phonetic:"an-tis-i-PEY-şın", type:"noun", example:"She waited in anticipation of the results.", status:"new", score:0 },
+  { word:"apparent", tr:"açık / görünür", phonetic:"ı-PER-ınt", type:"adjective", example:"The solution was apparent from the start.", status:"new", score:0 },
+  { word:"application", tr:"başvuru / uygulama", phonetic:"ap-li-KEY-şın", type:"noun", example:"She submitted her application on time.", status:"new", score:0 },
+  { word:"appreciation", tr:"takdir / değer bilme", phonetic:"ı-pri-şi-EY-şın", type:"noun", example:"Show appreciation for small things.", status:"new", score:0 },
+  { word:"appropriate", tr:"uygun", phonetic:"ı-PROW-pri-ıt", type:"adjective", example:"Choose appropriate words in every situation.", status:"new", score:0 },
+  { word:"approval", tr:"onay", phonetic:"ı-PRUV-ıl", type:"noun", example:"She received approval for her project.", status:"new", score:0 },
+  { word:"barrier", tr:"engel / bariyer", phonetic:"BER-i-ır", type:"noun", example:"Break through every barrier in your way.", status:"new", score:0 },
+  { word:"category", tr:"kategori", phonetic:"KAT-i-gı-ri", type:"noun", example:"Which category does this fall into?", status:"new", score:0 },
+  { word:"circumstance", tr:"koşul", phonetic:"SÖR-kım-stans", type:"noun", example:"Success is possible in any circumstance.", status:"new", score:0 },
+  { word:"clause", tr:"madde / hüküm", phonetic:"KLOZ", type:"noun", example:"Read every clause in the contract.", status:"new", score:0 },
+  { word:"colleague", tr:"meslektaş", phonetic:"KOL-ig", type:"noun", example:"She has a great relationship with her colleagues.", status:"new", score:0 },
+  { word:"compliment", tr:"iltifat / tamamlamak", phonetic:"KOM-pli-mınt", type:"noun", example:"A sincere compliment goes a long way.", status:"new", score:0 },
+  { word:"comprehensive", tr:"kapsamlı", phonetic:"kom-pri-HEN-siv", type:"adjective", example:"She wrote a comprehensive report.", status:"new", score:0 },
+  { word:"concise", tr:"kısa ve öz", phonetic:"kın-SAYS", type:"adjective", example:"Keep your emails concise and clear.", status:"new", score:0 },
+  { word:"confirm", tr:"onaylamak", phonetic:"kın-FÖRM", type:"verb", example:"Please confirm your attendance.", status:"new", score:0 },
+  { word:"consequence", tr:"sonuç / etki", phonetic:"KON-si-kwıns", type:"noun", example:"Think about the consequences of your actions.", status:"new", score:0 },
+  { word:"contract", tr:"sözleşme / daralma", phonetic:"KON-trakt", type:"noun", example:"Read the contract carefully before signing.", status:"new", score:0 },
+  { word:"convenient", tr:"uygun / elverişli", phonetic:"kın-Vİ-ni-yınt", type:"adjective", example:"Is this time convenient for you?", status:"new", score:0 },
+  { word:"cooperation", tr:"iş birliği", phonetic:"kow-op-ır-EY-şın", type:"noun", example:"Cooperation leads to better outcomes.", status:"new", score:0 },
+  { word:"deadline", tr:"son tarih", phonetic:"DED-layn", type:"noun", example:"Never miss a deadline.", status:"new", score:0 },
+  { word:"debate", tr:"tartışma / münazara", phonetic:"di-BEYT", type:"noun", example:"She won the debate with strong arguments.", status:"new", score:0 },
+  { word:"delegate", tr:"devretmek / temsilci", phonetic:"DEL-i-git", type:"verb", example:"Learn to delegate tasks effectively.", status:"new", score:0 },
+  { word:"diversity", tr:"çeşitlilik", phonetic:"dı-VÖR-si-ti", type:"noun", example:"Diversity strengthens any team.", status:"new", score:0 },
+  { word:"dominant", tr:"baskın / egemen", phonetic:"DOM-i-nınt", type:"adjective", example:"She was the dominant force in the competition.", status:"new", score:0 },
+  { word:"draft", tr:"taslak / hazırlamak", phonetic:"DRAFT", type:"noun", example:"Write a draft before your final version.", status:"new", score:0 },
+  { word:"duration", tr:"süre / müddet", phonetic:"dyu-REY-şın", type:"noun", example:"What is the duration of the course?", status:"new", score:0 },
+  { word:"eliminate", tr:"ortadan kaldırmak", phonetic:"i-LİM-i-neyt", type:"verb", example:"Eliminate unnecessary distractions.", status:"new", score:0 },
+  { word:"emphasis", tr:"vurgu / önem", phonetic:"EM-fı-sis", type:"noun", example:"She places great emphasis on details.", status:"new", score:0 },
+  { word:"encounter", tr:"karşılaşmak", phonetic:"in-KAUN-tır", type:"verb", example:"I encountered a problem today.", status:"new", score:0 },
+  { word:"enforce", tr:"uygulatmak / zorla kabul ettirmek", phonetic:"in-FORS", type:"verb", example:"Rules must be enforced fairly.", status:"new", score:0 },
+  { word:"ensure", tr:"sağlamak / emin olmak", phonetic:"in-ŞU-ır", type:"verb", example:"Ensure all tasks are completed on time.", status:"new", score:0 },
+  { word:"enterprise", tr:"girişim / şirket", phonetic:"EN-tır-prayz", type:"noun", example:"She runs a successful enterprise.", status:"new", score:0 },
+  { word:"ethical", tr:"etik / ahlaki", phonetic:"ETH-i-kıl", type:"adjective", example:"Always make ethical decisions.", status:"new", score:0 },
+  { word:"evolve", tr:"evrimleşmek / gelişmek", phonetic:"i-VOLV", type:"verb", example:"You must evolve to stay relevant.", status:"new", score:0 },
+  { word:"exceed", tr:"aşmak / geçmek", phonetic:"ik-SİD", type:"verb", example:"Always strive to exceed expectations.", status:"new", score:0 },
+  { word:"exclusive", tr:"özel / münhasır", phonetic:"ik-SKLU-siv", type:"adjective", example:"This is an exclusive opportunity.", status:"new", score:0 },
+  { word:"expertise", tr:"uzmanlık", phonetic:"eks-pör-TİZ", type:"noun", example:"She has expertise in digital marketing.", status:"new", score:0 },
+  { word:"explicit", tr:"açık seçik / net", phonetic:"ik-SPLIS-it", type:"adjective", example:"Be explicit about your requirements.", status:"new", score:0 },
+  { word:"exposure", tr:"maruz kalma / deneyim", phonetic:"ik-SPOW-jır", type:"noun", example:"Exposure to new ideas is valuable.", status:"new", score:0 },
+  { word:"extensive", tr:"kapsamlı / geniş", phonetic:"ik-STEN-siv", type:"adjective", example:"She has extensive knowledge of history.", status:"new", score:0 },
+  { word:"external", tr:"harici / dışsal", phonetic:"ik-STÖR-nıl", type:"adjective", example:"Seek external feedback when needed.", status:"new", score:0 },
+  { word:"factor", tr:"etken / faktör", phonetic:"FAK-tır", type:"noun", example:"Hard work is the biggest factor in success.", status:"new", score:0 },
+  { word:"feedback", tr:"geri bildirim", phonetic:"FİD-bak", type:"noun", example:"Constructive feedback helps you grow.", status:"new", score:0 },
+  { word:"flexible", tr:"esnek", phonetic:"FLEK-si-bıl", type:"adjective", example:"Be flexible when plans change.", status:"new", score:0 },
+  { word:"format", tr:"biçim / düzenlemek", phonetic:"FOR-mat", type:"noun", example:"Choose the right format for your document.", status:"new", score:0 },
+  { word:"framework", tr:"çerçeve / yapı", phonetic:"FREYM-wörk", type:"noun", example:"Build a solid framework for your ideas.", status:"new", score:0 },
+  { word:"global", tr:"küresel", phonetic:"GLOW-bıl", type:"adjective", example:"Think with a global perspective.", status:"new", score:0 },
+  { word:"guarantee", tr:"garanti / garanti etmek", phonetic:"ger-ın-Ti", type:"noun", example:"There is no guarantee of success.", status:"new", score:0 },
+  { word:"hierarchy", tr:"hiyerarşi", phonetic:"HAY-ı-rar-ki", type:"noun", example:"Understand the hierarchy of your organization.", status:"new", score:0 },
+  { word:"impact", tr:"etki", phonetic:"İM-pakt", type:"noun", example:"Your actions have an impact on others.", status:"new", score:0 },
+  { word:"incentive", tr:"teşvik / motivasyon", phonetic:"in-SEN-tiv", type:"noun", example:"What is your incentive to work harder?", status:"new", score:0 },
+  { word:"indicator", tr:"gösterge", phonetic:"İN-di-key-tır", type:"noun", example:"This is a good indicator of progress.", status:"new", score:0 },
+  { word:"individual", tr:"birey / bireysel", phonetic:"in-di-VİC-yu-ıl", type:"noun", example:"Respect every individual's opinion.", status:"new", score:0 },
+  { word:"initiative", tr:"girişim / inisiyatif", phonetic:"i-NİŞ-ı-tiv", type:"noun", example:"Take the initiative when needed.", status:"new", score:0 },
+  { word:"input", tr:"katkı / girdi", phonetic:"İN-put", type:"noun", example:"Your input is very important to us.", status:"new", score:0 },
+  { word:"investigate", tr:"araştırmak / soruşturmak", phonetic:"in-VES-ti-geyt", type:"verb", example:"Investigate before you judge.", status:"new", score:0 },
+  { word:"justify", tr:"gerekçe göstermek", phonetic:"CAS-ti-fay", type:"verb", example:"Justify your decisions with evidence.", status:"new", score:0 },
+  { word:"launch", tr:"başlatmak / piyasaya sürmek", phonetic:"LONÇ", type:"verb", example:"She launched her business last year.", status:"new", score:0 },
+  { word:"mechanism", tr:"mekanizma", phonetic:"MEK-ı-niz-ım", type:"noun", example:"What is the mechanism behind this?", status:"new", score:0 },
+  { word:"milestone", tr:"dönüm noktası", phonetic:"MAYL-stowns", type:"noun", example:"Celebrate every milestone you reach.", status:"new", score:0 },
+  { word:"mission", tr:"misyon / görev", phonetic:"MİŞ-ın", type:"noun", example:"What is your personal mission in life?", status:"new", score:0 },
+  { word:"monitor", tr:"izlemek / ekran", phonetic:"MON-i-tır", type:"verb", example:"Monitor your progress weekly.", status:"new", score:0 },
+  { word:"negotiate", tr:"müzakere etmek", phonetic:"ni-GOW-şi-eyt", type:"verb", example:"Learn to negotiate effectively.", status:"new", score:0 },
+  { word:"network", tr:"ağ / iletişim ağı kurmak", phonetic:"NET-wörk", type:"noun", example:"Build a strong professional network.", status:"new", score:0 },
+  { word:"optimal", tr:"en uygun", phonetic:"OP-ti-mıl", type:"adjective", example:"Find the optimal solution.", status:"new", score:0 },
+  { word:"output", tr:"çıktı / verim", phonetic:"AUT-put", type:"noun", example:"Increase your daily output.", status:"new", score:0 },
+  { word:"overview", tr:"genel bakış", phonetic:"OW-vır-vyu", type:"noun", example:"Give me a quick overview of the project.", status:"new", score:0 },
+  { word:"parameter", tr:"parametre / sınır", phonetic:"pı-RAM-i-tır", type:"noun", example:"Work within the given parameters.", status:"new", score:0 },
+  { word:"performance", tr:"performans", phonetic:"pır-FOR-mıns", type:"noun", example:"Track your performance over time.", status:"new", score:0 },
+  { word:"perspective", tr:"bakış açısı", phonetic:"pır-SPEK-tiv", type:"noun", example:"Gain a new perspective on challenges.", status:"new", score:0 },
+  { word:"phase", tr:"aşama / evre", phonetic:"FEYZ", type:"noun", example:"We are in the final phase of the project.", status:"new", score:0 },
+  { word:"policy", tr:"politika / yönetmelik", phonetic:"POL-ı-si", type:"noun", example:"Follow the company policy at all times.", status:"new", score:0 },
+  { word:"portfolio", tr:"portföy", phonetic:"port-FOW-li-ow", type:"noun", example:"Build a strong professional portfolio.", status:"new", score:0 },
+  { word:"potential", tr:"potansiyel", phonetic:"pı-TEN-şıl", type:"noun", example:"Every person has incredible potential.", status:"new", score:0 },
+  { word:"preliminary", tr:"ön / hazırlık", phonetic:"pri-LİM-i-nı-ri", type:"adjective", example:"The preliminary results look promising.", status:"new", score:0 },
+  { word:"presentation", tr:"sunum", phonetic:"prez-ın-TEY-şın", type:"noun", example:"She gave an outstanding presentation.", status:"new", score:0 },
+  { word:"principle", tr:"ilke / prensip", phonetic:"PRİN-sı-pıl", type:"noun", example:"Act according to your core principles.", status:"new", score:0 },
+  { word:"procedure", tr:"prosedür / yöntem", phonetic:"prı-SİCYÜR", type:"noun", example:"Follow the correct procedure always.", status:"new", score:0 },
+  { word:"productivity", tr:"üretkenlik", phonetic:"pro-dak-TİV-i-ti", type:"noun", example:"Improve your productivity with better habits.", status:"new", score:0 },
+  { word:"professional", tr:"profesyonel", phonetic:"prı-FEŞY-ı-nıl", type:"adjective", example:"Always behave in a professional manner.", status:"new", score:0 },
+  { word:"proposal", tr:"teklif / öneri", phonetic:"prı-POW-zıl", type:"noun", example:"She submitted a strong proposal.", status:"new", score:0 },
+  { word:"qualification", tr:"nitelik / yeterlilik", phonetic:"kwol-i-fi-KEY-şın", type:"noun", example:"What qualifications does this job require?", status:"new", score:0 },
+  { word:"quota", tr:"kota", phonetic:"KWOW-tı", type:"noun", example:"She exceeded her monthly quota.", status:"new", score:0 },
+  { word:"recruit", tr:"işe almak", phonetic:"ri-KRUT", type:"verb", example:"We are recruiting talented individuals.", status:"new", score:0 },
+  { word:"reference", tr:"kaynak / referans", phonetic:"REF-ırıns", type:"noun", example:"Provide references with your application.", status:"new", score:0 },
+  { word:"regulation", tr:"düzenleme / yönetmelik", phonetic:"reg-yu-LEY-şın", type:"noun", example:"Follow all relevant regulations.", status:"new", score:0 },
+  { word:"revenue", tr:"gelir / hasılat", phonetic:"REV-ı-nyu", type:"noun", example:"Increase revenue by improving service.", status:"new", score:0 },
+  { word:"review", tr:"gözden geçirmek / inceleme", phonetic:"ri-VYU", type:"verb", example:"Review your work before submitting.", status:"new", score:0 },
+  { word:"sector", tr:"sektör / alan", phonetic:"SEK-tır", type:"noun", example:"She works in the private sector.", status:"new", score:0 },
+  { word:"sequence", tr:"sıra / dizi", phonetic:"Si-kwıns", type:"noun", example:"Follow the sequence of steps carefully.", status:"new", score:0 },
+  { word:"shift", tr:"değişim / kaymak", phonetic:"ŞİFT", type:"noun", example:"There has been a shift in mindset.", status:"new", score:0 },
+  { word:"solution", tr:"çözüm", phonetic:"sı-LU-şın", type:"noun", example:"Every problem has a solution.", status:"new", score:0 },
+  { word:"statement", tr:"beyan / açıklama", phonetic:"STEYT-mınt", type:"noun", example:"Make a clear statement of your goals.", status:"new", score:0 },
+  { word:"structure", tr:"yapı / yapılandırmak", phonetic:"STRAK-çır", type:"noun", example:"Build a clear structure for your ideas.", status:"new", score:0 },
+  { word:"submit", tr:"göndermek / teslim etmek", phonetic:"sıb-MİT", type:"verb", example:"Submit your work before the deadline.", status:"new", score:0 },
+  { word:"sufficient", tr:"yeterli", phonetic:"sı-FİŞ-ınt", type:"adjective", example:"Is the funding sufficient for the project?", status:"new", score:0 },
+  { word:"summary", tr:"özet", phonetic:"SAM-ı-ri", type:"noun", example:"Write a brief summary of the findings.", status:"new", score:0 },
+  { word:"sustainable", tr:"sürdürülebilir", phonetic:"sıs-TEY-nı-bıl", type:"adjective", example:"Build sustainable habits.", status:"new", score:0 },
+  { word:"target", tr:"hedef / hedeflemek", phonetic:"TAR-git", type:"noun", example:"Set a clear target for each month.", status:"new", score:0 },
+  { word:"technical", tr:"teknik", phonetic:"TEK-ni-kıl", type:"adjective", example:"She has strong technical skills.", status:"new", score:0 },
+  { word:"timeline", tr:"zaman çizelgesi", phonetic:"TAYM-layn", type:"noun", example:"Create a timeline for your project.", status:"new", score:0 },
+  { word:"transition", tr:"geçiş", phonetic:"tran-ZİŞ-ın", type:"noun", example:"Manage the transition smoothly.", status:"new", score:0 },
+  { word:"trend", tr:"eğilim / akım", phonetic:"TREND", type:"noun", example:"Stay on top of industry trends.", status:"new", score:0 },
+  { word:"unique", tr:"benzersiz", phonetic:"yu-NİK", type:"adjective", example:"Every person's journey is unique.", status:"new", score:0 },
+  { word:"utilize", tr:"kullanmak / yararlanmak", phonetic:"YU-ti-layz", type:"verb", example:"Utilize your resources wisely.", status:"new", score:0 },
+  { word:"validate", tr:"doğrulamak", phonetic:"VAL-i-deyt", type:"verb", example:"Validate your ideas with data.", status:"new", score:0 },
+  { word:"vision", tr:"vizyon / hedef", phonetic:"VİJ-ın", type:"noun", example:"She has a clear vision for her future.", status:"new", score:0 },
+  { word:"workload", tr:"iş yükü", phonetic:"WÖRK-lowd", type:"noun", example:"Manage your workload effectively.", status:"new", score:0 },
+  { word:"affectionate", tr:"sevecen / şefkatli", phonetic:"ı-FEK-şı-nıt", type:"adjective", example:"She is affectionate toward everyone she meets.", status:"new", score:0 },
+  { word:"agitated", tr:"huzursuz / sinirli", phonetic:"AC-i-tey-tıd", type:"adjective", example:"He felt agitated before the presentation.", status:"new", score:0 },
+  { word:"appreciative", tr:"minnettarlık duyan", phonetic:"ı-PRI-şı-tiv", type:"adjective", example:"Be appreciative of small acts of kindness.", status:"new", score:0 },
+  { word:"arrogant", tr:"kibirli / kendini beğenmiş", phonetic:"ER-ı-gınt", type:"adjective", example:"Don't be arrogant about your success.", status:"new", score:0 },
+  { word:"blissful", tr:"mutlu / mesut", phonetic:"BLİS-fıl", type:"adjective", example:"She felt blissful after finishing her work.", status:"new", score:0 },
+  { word:"compassionate", tr:"merhametli", phonetic:"kım-PAŞ-ı-nıt", type:"adjective", example:"She is compassionate and understanding.", status:"new", score:0 },
+  { word:"content", tr:"memnun / tatmin olmuş", phonetic:"kın-TENT", type:"adjective", example:"She is content with simple pleasures.", status:"new", score:0 },
+  { word:"courageous", tr:"cesur / yiğit", phonetic:"kı-REY-cıs", type:"adjective", example:"Be courageous in the face of fear.", status:"new", score:0 },
+  { word:"curious", tr:"meraklı", phonetic:"KYU-ri-ıs", type:"adjective", example:"Stay curious about the world.", status:"new", score:0 },
+  { word:"determined", tr:"kararlı", phonetic:"di-TÖR-mind", type:"adjective", example:"She is determined to reach her goals.", status:"new", score:0 },
+  { word:"empathetic", tr:"empatik / anlayışlı", phonetic:"em-pı-THET-ik", type:"adjective", example:"Be empathetic toward others' struggles.", status:"new", score:0 },
+  { word:"enthusiastic", tr:"coşkulu / hevesli", phonetic:"in-thyu-zi-AS-tik", type:"adjective", example:"She is always enthusiastic about new projects.", status:"new", score:0 },
+  { word:"envious", tr:"kıskanç", phonetic:"EN-vi-ıs", type:"adjective", example:"Don't be envious of others' success.", status:"new", score:0 },
+  { word:"forgiving", tr:"bağışlayıcı", phonetic:"fır-GİV-ing", type:"adjective", example:"Be forgiving — it frees your soul.", status:"new", score:0 },
+  { word:"grateful", tr:"minnettar", phonetic:"GREYT-fıl", type:"adjective", example:"Be grateful for everything you have.", status:"new", score:0 },
+  { word:"greedy", tr:"açgözlü / tamahkâr", phonetic:"GRİD-i", type:"adjective", example:"Greedy behavior destroys relationships.", status:"new", score:0 },
+  { word:"hopeful", tr:"umutlu", phonetic:"HOWP-fıl", type:"adjective", example:"Stay hopeful even in difficult times.", status:"new", score:0 },
+  { word:"imaginative", tr:"hayal gücü kuvvetli", phonetic:"i-MAC-i-nı-tiv", type:"adjective", example:"She is an imaginative and creative thinker.", status:"new", score:0 },
+  { word:"impulsive", tr:"dürtüsel / aceleci", phonetic:"im-PAL-siv", type:"adjective", example:"Don't make impulsive decisions.", status:"new", score:0 },
+  { word:"indifferent", tr:"ilgisiz / kayıtsız", phonetic:"in-DİF-ırınt", type:"adjective", example:"Don't be indifferent to others' pain.", status:"new", score:0 },
+  { word:"insecure", tr:"güvensiz / kendinden emin olmayan", phonetic:"in-si-KYU-ır", type:"adjective", example:"She felt insecure in her new role.", status:"new", score:0 },
+  { word:"joyful", tr:"neşeli / sevinçli", phonetic:"COY-fıl", type:"adjective", example:"She has a joyful and positive spirit.", status:"new", score:0 },
+  { word:"lazy", tr:"tembel", phonetic:"LEY-zi", type:"adjective", example:"Don't be lazy about your dreams.", status:"new", score:0 },
+  { word:"melancholy", tr:"melankolik / hüzün", phonetic:"MEL-ın-kol-i", type:"noun", example:"She felt a sense of melancholy.", status:"new", score:0 },
+  { word:"mindful", tr:"dikkatli / bilinçli", phonetic:"MAYND-fıl", type:"adjective", example:"Be mindful of your words and actions.", status:"new", score:0 },
+  { word:"nostalgic", tr:"nostaljik / özlem duyan", phonetic:"nos-TAL-cik", type:"adjective", example:"She felt nostalgic about her childhood.", status:"new", score:0 },
+  { word:"optimistic", tr:"iyimser", phonetic:"op-ti-MİS-tik", type:"adjective", example:"Optimistic people live longer and healthier.", status:"new", score:0 },
+  { word:"overwhelmed", tr:"bunalmış / aşılmış", phonetic:"ow-vır-WELD", type:"adjective", example:"She felt overwhelmed with work.", status:"new", score:0 },
+  { word:"pessimistic", tr:"kötümser", phonetic:"pes-i-MİS-tik", type:"adjective", example:"Try not to be pessimistic about the future.", status:"new", score:0 },
+  { word:"proud", tr:"gururlu", phonetic:"PRAUD", type:"adjective", example:"She is proud of her accomplishments.", status:"new", score:0 },
+  { word:"resentful", tr:"kırgın / içerlemiş", phonetic:"ri-ZENT-fıl", type:"adjective", example:"Don't be resentful of others' success.", status:"new", score:0 },
+  { word:"self-confident", tr:"kendine güvenen", phonetic:"self KON-fi-dınt", type:"adjective", example:"Be self-confident in your abilities.", status:"new", score:0 },
+  { word:"sincere", tr:"samimi / içten", phonetic:"sin-SİYR", type:"adjective", example:"Be sincere in your relationships.", status:"new", score:0 },
+  { word:"stubborn", tr:"inatçı", phonetic:"STAB-ırn", type:"adjective", example:"She is stubborn but hardworking.", status:"new", score:0 },
+  { word:"sympathetic", tr:"sempatik / anlayışlı", phonetic:"sim-pı-THET-ik", type:"adjective", example:"She is sympathetic to those in need.", status:"new", score:0 },
+  { word:"tenacious", tr:"azimli / ısrarcı", phonetic:"ti-NEY-şıs", type:"adjective", example:"She is tenacious in pursuing her dreams.", status:"new", score:0 },
+  { word:"vulnerable", tr:"savunmasız / kırılgan", phonetic:"VAL-nır-ı-bıl", type:"adjective", example:"It's okay to be vulnerable sometimes.", status:"new", score:0 },
+  { word:"witty", tr:"nükteli / zeki", phonetic:"Wİ-ti", type:"adjective", example:"She is witty and quick with words.", status:"new", score:0 },
+  { word:"atmosphere", tr:"atmosfer", phonetic:"AT-mıs-feer", type:"noun", example:"The atmosphere protects life on Earth.", status:"new", score:0 },
+  { word:"biological", tr:"biyolojik", phonetic:"bay-ı-LOC-i-kıl", type:"adjective", example:"There is a biological reason for this.", status:"new", score:0 },
+  { word:"catastrophe", tr:"felaket / yıkım", phonetic:"kı-TAS-trı-fi", type:"noun", example:"The earthquake was a catastrophe.", status:"new", score:0 },
+  { word:"chemical", tr:"kimyasal", phonetic:"KEM-i-kıl", type:"adjective", example:"Avoid exposure to harmful chemicals.", status:"new", score:0 },
+  { word:"climate", tr:"iklim", phonetic:"KLAY-mit", type:"noun", example:"Climate change is a global crisis.", status:"new", score:0 },
+  { word:"conservation", tr:"koruma / muhafaza", phonetic:"kon-sör-VEY-şın", type:"noun", example:"Wildlife conservation is vital.", status:"new", score:0 },
+  { word:"cycle", tr:"döngü / çevrim", phonetic:"SAY-kıl", type:"noun", example:"Break the cycle of negative habits.", status:"new", score:0 },
+  { word:"digital", tr:"dijital", phonetic:"DİC-i-tıl", type:"adjective", example:"We live in a digital age.", status:"new", score:0 },
+  { word:"ecology", tr:"ekoloji", phonetic:"i-KOL-ı-ci", type:"noun", example:"Ecology studies living systems.", status:"new", score:0 },
+  { word:"electricity", tr:"elektrik", phonetic:"i-lek-TRİS-i-ti", type:"noun", example:"She has an electric personality.", status:"new", score:0 },
+  { word:"evolution", tr:"evrim / gelişim", phonetic:"ev-ı-LU-şın", type:"noun", example:"Evolution is a continuous process.", status:"new", score:0 },
+  { word:"gravity", tr:"yerçekimi / ciddiyet", phonetic:"GRAV-i-ti", type:"noun", example:"Gravity keeps us grounded.", status:"new", score:0 },
+  { word:"habitat", tr:"habitat / yaşam alanı", phonetic:"HAB-i-tat", type:"noun", example:"Protect the natural habitat of animals.", status:"new", score:0 },
+  { word:"innovation", tr:"yenilik", phonetic:"in-ı-VEY-şın", type:"noun", example:"Innovation drives progress.", status:"new", score:0 },
+  { word:"molecule", tr:"molekül", phonetic:"MOL-ı-kyul", type:"noun", example:"Water is made of tiny molecules.", status:"new", score:0 },
+  { word:"organism", tr:"organizma", phonetic:"OR-gı-niz-ım", type:"noun", example:"Every organism plays a role in nature.", status:"new", score:0 },
+  { word:"phenomenon", tr:"fenomen / olgu", phonetic:"fi-NOM-i-nın", type:"noun", example:"This is a rare natural phenomenon.", status:"new", score:0 },
+  { word:"radiation", tr:"radyasyon", phonetic:"rey-di-EY-şın", type:"noun", example:"The sun emits radiation.", status:"new", score:0 },
+  { word:"renewable", tr:"yenilenebilir", phonetic:"ri-NYU-ı-bıl", type:"adjective", example:"Invest in renewable energy sources.", status:"new", score:0 },
+  { word:"resource", tr:"kaynak", phonetic:"Ri-sors", type:"noun", example:"Use your resources wisely.", status:"new", score:0 },
+  { word:"species", tr:"tür / çeşit", phonetic:"SPİ-şız", type:"noun", example:"Many species are endangered.", status:"new", score:0 },
+  { word:"structure", tr:"yapı", phonetic:"STRAK-çır", type:"noun", example:"The structure of DNA is remarkable.", status:"new", score:0 },
+  { word:"sustainable", tr:"sürdürülebilir", phonetic:"sıs-TEY-nı-bıl", type:"adjective", example:"Choose a sustainable lifestyle.", status:"new", score:0 },
+  { word:"technology", tr:"teknoloji", phonetic:"tek-NOL-ı-ci", type:"noun", example:"Technology is changing our world.", status:"new", score:0 },
+  { word:"universe", tr:"evren", phonetic:"YU-ni-vörs", type:"noun", example:"The universe is vast and mysterious.", status:"new", score:0 },
+  { word:"addiction", tr:"bağımlılık", phonetic:"ı-DİK-şın", type:"noun", example:"Break free from any addiction.", status:"new", score:0 },
+  { word:"appetite", tr:"iştah", phonetic:"AP-i-tayt", type:"noun", example:"She lost her appetite due to stress.", status:"new", score:0 },
+  { word:"athletic", tr:"atletik / sporcu", phonetic:"ıth-LET-ik", type:"adjective", example:"She has an athletic build.", status:"new", score:0 },
+  { word:"awareness", tr:"farkındalık", phonetic:"ı-WER-nıs", type:"noun", example:"Raise awareness about mental health.", status:"new", score:0 },
+  { word:"balanced", tr:"dengeli", phonetic:"BAL-ınst", type:"adjective", example:"Eat a balanced and nutritious diet.", status:"new", score:0 },
+  { word:"chronic", tr:"kronik", phonetic:"KRON-ik", type:"adjective", example:"She suffers from chronic back pain.", status:"new", score:0 },
+  { word:"cognitive", tr:"bilişsel", phonetic:"KOG-ni-tiv", type:"adjective", example:"Cognitive skills improve with practice.", status:"new", score:0 },
+  { word:"detox", tr:"detoks", phonetic:"Di-toks", type:"noun", example:"A digital detox is sometimes necessary.", status:"new", score:0 },
+  { word:"endurance", tr:"dayanma gücü", phonetic:"in-DYU-rıns", type:"noun", example:"Marathon runners have great endurance.", status:"new", score:0 },
+  { word:"fatigue", tr:"yorgunluk", phonetic:"fı-TiG", type:"noun", example:"Rest when you feel fatigue.", status:"new", score:0 },
+  { word:"fitness", tr:"zindelik / uygunluk", phonetic:"FİT-nıs", type:"noun", example:"Fitness is a lifelong commitment.", status:"new", score:0 },
+  { word:"flexible", tr:"esnek", phonetic:"FLEK-si-bıl", type:"adjective", example:"Yoga makes your body flexible.", status:"new", score:0 },
+  { word:"heal", tr:"iyileşmek", phonetic:"HİL", type:"verb", example:"Time heals almost everything.", status:"new", score:0 },
+  { word:"immune", tr:"bağışık", phonetic:"i-MYUN", type:"adjective", example:"Exercise boosts your immune system.", status:"new", score:0 },
+  { word:"meditation", tr:"meditasyon", phonetic:"med-i-TEY-şın", type:"noun", example:"Daily meditation reduces stress.", status:"new", score:0 },
+  { word:"mental", tr:"zihinsel / ruhsal", phonetic:"MEN-tıl", type:"adjective", example:"Take care of your mental health.", status:"new", score:0 },
+  { word:"nourish", tr:"beslemek / güçlendirmek", phonetic:"NÖR-iş", type:"verb", example:"Nourish your body with good food.", status:"new", score:0 },
+  { word:"nutrition", tr:"beslenme", phonetic:"nyu-TRİŞ-ın", type:"noun", example:"Good nutrition is key to health.", status:"new", score:0 },
+  { word:"posture", tr:"duruş", phonetic:"POS-çır", type:"noun", example:"Maintain good posture while working.", status:"new", score:0 },
+  { word:"recover", tr:"iyileşmek / toparlamak", phonetic:"ri-KAV-ır", type:"verb", example:"She recovered quickly from her injury.", status:"new", score:0 },
+  { word:"stamina", tr:"dayanıklılık / güç", phonetic:"STAM-i-nı", type:"noun", example:"Build your stamina gradually.", status:"new", score:0 },
+  { word:"therapy", tr:"terapi / tedavi", phonetic:"THER-ı-pi", type:"noun", example:"Therapy can transform your mindset.", status:"new", score:0 },
+  { word:"vitality", tr:"canlılık / hayatiyet", phonetic:"vay-TAL-i-ti", type:"noun", example:"She radiates energy and vitality.", status:"new", score:0 },
+  { word:"well-being", tr:"esenlik / iyilik hali", phonetic:"WEL-Bi-ing", type:"noun", example:"Prioritize your overall well-being.", status:"new", score:0 },
+  { word:"workout", tr:"antrenman", phonetic:"WÖRK-aut", type:"noun", example:"Stick to your daily workout routine.", status:"new", score:0 },
+  { word:"affection", tr:"sevgi / şefkat", phonetic:"ı-FEK-şın", type:"noun", example:"Show affection to those you love.", status:"new", score:0 },
+  { word:"alliance", tr:"ittifak / birlik", phonetic:"ı-LAY-ıns", type:"noun", example:"Build a strong alliance with your team.", status:"new", score:0 },
+  { word:"argument", tr:"tartışma", phonetic:"AR-gyu-mınt", type:"noun", example:"Never let an argument damage a friendship.", status:"new", score:0 },
+  { word:"attraction", tr:"çekim / cazibe", phonetic:"ı-TRAK-şın", type:"noun", example:"There was a strong attraction between them.", status:"new", score:0 },
+  { word:"betrayal", tr:"ihanet", phonetic:"bi-TREY-ıl", type:"noun", example:"Betrayal is hard to forgive.", status:"new", score:0 },
+  { word:"breakup", tr:"ayrılık / kopuş", phonetic:"BREYK-ap", type:"noun", example:"She was devastated after the breakup.", status:"new", score:0 },
+  { word:"commitment", tr:"bağlılık", phonetic:"kı-MİT-mınt", type:"noun", example:"Relationships require real commitment.", status:"new", score:0 },
+  { word:"companion", tr:"arkadaş / yoldaş", phonetic:"kım-PAN-yın", type:"noun", example:"She is a loyal companion.", status:"new", score:0 },
+  { word:"conflict", tr:"çatışma / anlaşmazlık", phonetic:"KON-flikt", type:"noun", example:"Avoid unnecessary conflict.", status:"new", score:0 },
+  { word:"connection", tr:"bağlantı / bağ", phonetic:"kı-NEK-şın", type:"noun", example:"Human connection is essential.", status:"new", score:0 },
+  { word:"dialogue", tr:"diyalog / konuşma", phonetic:"DAY-ı-log", type:"noun", example:"Open dialogue solves many problems.", status:"new", score:0 },
+  { word:"disagreement", tr:"anlaşmazlık", phonetic:"dis-ı-GRİ-mınt", type:"noun", example:"Handle disagreements with maturity.", status:"new", score:0 },
+  { word:"empathy", tr:"empati", phonetic:"EM-pı-thi", type:"noun", example:"Empathy is the foundation of connection.", status:"new", score:0 },
+  { word:"encounter", tr:"karşılaşma", phonetic:"in-KAUN-tır", type:"noun", example:"Every encounter is an opportunity to learn.", status:"new", score:0 },
+  { word:"fondness", tr:"sevgi / sempati", phonetic:"FOND-nıs", type:"noun", example:"She has a fondness for nature.", status:"new", score:0 },
+  { word:"friendship", tr:"arkadaşlık", phonetic:"FREND-şip", type:"noun", example:"A true friendship is rare and precious.", status:"new", score:0 },
+  { word:"intimacy", tr:"yakınlık", phonetic:"İN-ti-mı-si", type:"noun", example:"Intimacy requires trust and vulnerability.", status:"new", score:0 },
+  { word:"loneliness", tr:"yalnızlık", phonetic:"LOWNI-nıs", type:"noun", example:"Loneliness is one of the greatest challenges.", status:"new", score:0 },
+  { word:"misunderstanding", tr:"yanlış anlama", phonetic:"mis-an-dır-STAND-ing", type:"noun", example:"Clear communication prevents misunderstanding.", status:"new", score:0 },
+  { word:"partnership", tr:"ortaklık / iş birliği", phonetic:"PART-nır-şip", type:"noun", example:"A strong partnership requires mutual respect.", status:"new", score:0 },
+  { word:"reconcile", tr:"uzlaşmak / barışmak", phonetic:"REK-ın-sayl", type:"verb", example:"She tried to reconcile with her friend.", status:"new", score:0 },
+  { word:"reunion", tr:"buluşma / yeniden bir araya gelme", phonetic:"ri-YUN-yın", type:"noun", example:"The family reunion was emotional.", status:"new", score:0 },
+  { word:"rivalry", tr:"rekabet / rekabetçi ortam", phonetic:"RAYV-ıl-ri", type:"noun", example:"Healthy rivalry pushes you to improve.", status:"new", score:0 },
+  { word:"solidarity", tr:"dayanışma", phonetic:"sol-i-DER-i-ti", type:"noun", example:"Show solidarity with those in need.", status:"new", score:0 },
+  { word:"tension", tr:"gerilim / tansiyon", phonetic:"TEN-şın", type:"noun", example:"Reduce tension by communicating clearly.", status:"new", score:0 },
+  { word:"abundance", tr:"bolluk / bereket", phonetic:"ı-BAN-dıns", type:"noun", example:"She lives a life of abundance.", status:"new", score:0 },
+  { word:"beverage", tr:"içecek", phonetic:"BEV-ırıc", type:"noun", example:"What beverage would you like?", status:"new", score:0 },
+  { word:"budget", tr:"bütçe", phonetic:"BAC-ıt", type:"noun", example:"Stick to your monthly budget.", status:"new", score:0 },
+  { word:"cuisine", tr:"mutfak / yemek kültürü", phonetic:"kwi-ZİN", type:"noun", example:"She loves Italian cuisine.", status:"new", score:0 },
+  { word:"efficient", tr:"verimli / etkin", phonetic:"i-FİŞ-ınt", type:"adjective", example:"Cook efficient and healthy meals.", status:"new", score:0 },
+  { word:"ingredient", tr:"malzeme / içindekiler", phonetic:"in-GRİ-di-yınt", type:"noun", example:"Use fresh ingredients for best results.", status:"new", score:0 },
+  { word:"investment", tr:"yatırım", phonetic:"in-VEST-mınt", type:"noun", example:"Education is the best investment.", status:"new", score:0 },
+  { word:"luxury", tr:"lüks", phonetic:"LAK-şıri", type:"noun", example:"Simple pleasures are the true luxury.", status:"new", score:0 },
+  { word:"organic", tr:"organik", phonetic:"or-GAN-ik", type:"adjective", example:"Try to buy organic food when possible.", status:"new", score:0 },
+  { word:"portion", tr:"porsiyon / kısım", phonetic:"POR-şın", type:"noun", example:"Control your portion sizes.", status:"new", score:0 },
+  { word:"recipe", tr:"tarif", phonetic:"RES-i-pi", type:"noun", example:"She shared her secret recipe.", status:"new", score:0 },
+  { word:"routine", tr:"rutin", phonetic:"ru-TİN", type:"noun", example:"A healthy routine leads to success.", status:"new", score:0 },
+  { word:"savings", tr:"birikim / tasarruf", phonetic:"SEYV-ingz", type:"noun", example:"Build your savings from an early age.", status:"new", score:0 },
+  { word:"schedule", tr:"program / plan", phonetic:"ŞKED-yul", type:"noun", example:"Create a daily schedule and follow it.", status:"new", score:0 },
+  { word:"tradition", tr:"gelenek", phonetic:"trı-DİŞ-ın", type:"noun", example:"Honor your culture and traditions.", status:"new", score:0 },
+  { word:"abstract", tr:"soyut / özet", phonetic:"AB-strakt", type:"adjective", example:"Her paintings are beautifully abstract.", status:"new", score:0 },
+  { word:"artwork", tr:"sanat eseri", phonetic:"ART-wörk", type:"noun", example:"The artwork speaks for itself.", status:"new", score:0 },
+  { word:"chorus", tr:"nakarat / koro", phonetic:"KOR-ıs", type:"noun", example:"The chorus of the song was unforgettable.", status:"new", score:0 },
+  { word:"compose", tr:"bestelemek / oluşturmak", phonetic:"kım-POWZ", type:"verb", example:"She composed a beautiful melody.", status:"new", score:0 },
+  { word:"creativity", tr:"yaratıcılık", phonetic:"kri-ey-TİV-i-ti", type:"noun", example:"Creativity has no limits.", status:"new", score:0 },
+  { word:"design", tr:"tasarım / tasarlamak", phonetic:"di-ZAYN", type:"noun", example:"Good design communicates without words.", status:"new", score:0 },
+  { word:"dramatic", tr:"dramatik / çarpıcı", phonetic:"drı-MAT-ik", type:"adjective", example:"She made a dramatic entrance.", status:"new", score:0 },
+  { word:"eloquent", tr:"güzel konuşan / etkileyici", phonetic:"EL-ı-kwınt", type:"adjective", example:"She gave an eloquent speech.", status:"new", score:0 },
+  { word:"fictional", tr:"kurgusal", phonetic:"FİK-şı-nıl", type:"adjective", example:"She loves fictional stories.", status:"new", score:0 },
+  { word:"graphic", tr:"grafiksel / çarpıcı", phonetic:"GREF-ik", type:"adjective", example:"She studied graphic design.", status:"new", score:0 },
+  { word:"harmony", tr:"uyum / ahenk", phonetic:"HAR-mı-ni", type:"noun", example:"The music was full of harmony.", status:"new", score:0 },
+  { word:"inspiration", tr:"ilham", phonetic:"in-spi-REY-şın", type:"noun", example:"Find inspiration in everyday life.", status:"new", score:0 },
+  { word:"literary", tr:"edebi", phonetic:"LİT-ır-ı-ri", type:"adjective", example:"She has strong literary skills.", status:"new", score:0 },
+  { word:"masterpiece", tr:"başyapıt", phonetic:"MAS-tır-pis", type:"noun", example:"This book is a masterpiece.", status:"new", score:0 },
+  { word:"melody", tr:"melodi", phonetic:"MEL-ı-di", type:"noun", example:"The melody stayed in her mind all day.", status:"new", score:0 },
+  { word:"narrative", tr:"anlatı / hikâye", phonetic:"NER-ı-tiv", type:"noun", example:"A strong narrative captivates readers.", status:"new", score:0 },
+  { word:"palette", tr:"palet / renk skalası", phonetic:"PAL-it", type:"noun", example:"She uses a rich color palette.", status:"new", score:0 },
+  { word:"performance", tr:"performans / gösteri", phonetic:"pır-FOR-mıns", type:"noun", example:"Her stage performance was incredible.", status:"new", score:0 },
+  { word:"portrait", tr:"portre", phonetic:"POR-trit", type:"noun", example:"She painted a beautiful portrait.", status:"new", score:0 },
+  { word:"rhythm", tr:"ritim", phonetic:"RİTH-ım", type:"noun", example:"She has a natural sense of rhythm.", status:"new", score:0 },
+  { word:"sculpture", tr:"heykel", phonetic:"SKALP-çır", type:"noun", example:"The sculpture was breathtaking.", status:"new", score:0 },
+  { word:"style", tr:"stil / tarz", phonetic:"STAYL", type:"noun", example:"Develop your own unique style.", status:"new", score:0 },
+  { word:"texture", tr:"doku / yapı", phonetic:"TEKS-çır", type:"noun", example:"The texture of the fabric is smooth.", status:"new", score:0 },
+  { word:"vivid", tr:"canlı / parlak", phonetic:"VİV-id", type:"adjective", example:"She described the scene in vivid detail.", status:"new", score:0 },
+  { word:"adventure", tr:"macera", phonetic:"ıd-VEN-çır", type:"noun", example:"Life is the greatest adventure.", status:"new", score:0 },
+  { word:"ancient", tr:"antik / çok eski", phonetic:"EYN-şınt", type:"adjective", example:"The ancient ruins are breathtaking.", status:"new", score:0 },
+  { word:"architecture", tr:"mimari", phonetic:"AR-ki-tek-çır", type:"noun", example:"She is fascinated by ancient architecture.", status:"new", score:0 },
+  { word:"border", tr:"sınır / kenar", phonetic:"BOR-dır", type:"noun", example:"They crossed the border at dawn.", status:"new", score:0 },
+  { word:"capital", tr:"başkent / sermaye", phonetic:"KAP-i-tıl", type:"noun", example:"Rome is the capital of Italy.", status:"new", score:0 },
+  { word:"civilization", tr:"uygarlık / medeniyet", phonetic:"siv-i-li-ZEY-şın", type:"noun", example:"Ancient civilizations shaped modern life.", status:"new", score:0 },
+  { word:"customs", tr:"gümrük / adetler", phonetic:"KAS-tımz", type:"noun", example:"Respect the customs of every culture.", status:"new", score:0 },
+  { word:"destination", tr:"varış noktası / hedef", phonetic:"des-ti-NEY-şın", type:"noun", example:"What is your next travel destination?", status:"new", score:0 },
+  { word:"expedition", tr:"sefer / keşif gezisi", phonetic:"eks-pi-DİŞ-ın", type:"noun", example:"She led an expedition to the Arctic.", status:"new", score:0 },
+  { word:"exploration", tr:"keşif / araştırma", phonetic:"eks-plı-REY-şın", type:"noun", example:"Exploration leads to discovery.", status:"new", score:0 },
+  { word:"heritage", tr:"miras", phonetic:"HER-i-tic", type:"noun", example:"Respect and protect your cultural heritage.", status:"new", score:0 },
+  { word:"hospitality", tr:"misafirperverlik", phonetic:"hos-pi-TAL-i-ti", type:"noun", example:"The local hospitality was amazing.", status:"new", score:0 },
+  { word:"itinerary", tr:"gezi planı", phonetic:"ay-TİN-ı-rer-i", type:"noun", example:"She planned a detailed itinerary.", status:"new", score:0 },
+  { word:"landmark", tr:"simge / belirgin yer", phonetic:"LAND-mark", type:"noun", example:"The Eiffel Tower is a famous landmark.", status:"new", score:0 },
+  { word:"landscape", tr:"manzara / peyzaj", phonetic:"LAND-skeyp", type:"noun", example:"The mountain landscape was spectacular.", status:"new", score:0 },
+  { word:"navigate", tr:"yol bulmak", phonetic:"NAV-i-geyt", type:"verb", example:"Navigate through life's challenges calmly.", status:"new", score:0 },
+  { word:"passport", tr:"pasaport", phonetic:"PAS-port", type:"noun", example:"Always keep your passport safe.", status:"new", score:0 },
+  { word:"pilgrimage", tr:"hac / kutsal yolculuk", phonetic:"PİL-grı-mic", type:"noun", example:"She made a pilgrimage to the holy city.", status:"new", score:0 },
+  { word:"souvenir", tr:"hatıra eşyası / hediyelik", phonetic:"su-vı-NİYR", type:"noun", example:"She brought a souvenir from Japan.", status:"new", score:0 },
+  { word:"tradition", tr:"gelenek", phonetic:"trı-DİŞ-ın", type:"noun", example:"Every culture has beautiful traditions.", status:"new", score:0 },
+  { word:"wanderlust", tr:"gezme tutkusu", phonetic:"WON-dır-last", type:"noun", example:"Her wanderlust drives her to explore.", status:"new", score:0 },
+  { word:"asset", tr:"varlık / değerli şey", phonetic:"AS-et", type:"noun", example:"Your skills are your greatest asset.", status:"new", score:0 },
+  { word:"audit", tr:"denetim / denetlemek", phonetic:"O-dit", type:"noun", example:"The company passed the annual audit.", status:"new", score:0 },
+  { word:"bankruptcy", tr:"iflas", phonetic:"BANK-rıpt-si", type:"noun", example:"She rebuilt herself after bankruptcy.", status:"new", score:0 },
+  { word:"capital", tr:"sermaye / ana", phonetic:"KAP-i-tıl", type:"noun", example:"She invested her capital wisely.", status:"new", score:0 },
+  { word:"commission", tr:"komisyon", phonetic:"kı-MİŞ-ın", type:"noun", example:"She earns a commission on every sale.", status:"new", score:0 },
+  { word:"competitor", tr:"rakip", phonetic:"kım-PET-i-tır", type:"noun", example:"Know your competitors well.", status:"new", score:0 },
+  { word:"consultant", tr:"danışman", phonetic:"kın-SAL-tınt", type:"noun", example:"She works as a business consultant.", status:"new", score:0 },
+  { word:"corporation", tr:"şirket / kuruluş", phonetic:"kor-pı-REY-şın", type:"noun", example:"She founded a successful corporation.", status:"new", score:0 },
+  { word:"deficit", tr:"açık / yetersizlik", phonetic:"DEF-i-sit", type:"noun", example:"Reduce the national deficit.", status:"new", score:0 },
+  { word:"economy", tr:"ekonomi", phonetic:"i-KON-ı-mi", type:"noun", example:"A strong economy benefits everyone.", status:"new", score:0 },
+  { word:"entrepreneur", tr:"girişimci", phonetic:"on-trı-prı-NÖR", type:"noun", example:"She is a successful entrepreneur.", status:"new", score:0 },
+  { word:"equity", tr:"eşitlik / hisse", phonetic:"EK-wi-ti", type:"noun", example:"She built equity in her business.", status:"new", score:0 },
+  { word:"expense", tr:"harcama / gider", phonetic:"ik-SPENS", type:"noun", example:"Track your monthly expenses.", status:"new", score:0 },
+  { word:"financial", tr:"mali / finansal", phonetic:"fi-NAN-şıl", type:"adjective", example:"Build financial independence early.", status:"new", score:0 },
+  { word:"income", tr:"gelir", phonetic:"İN-kam", type:"noun", example:"Increase your passive income streams.", status:"new", score:0 },
+  { word:"inflation", tr:"enflasyon", phonetic:"in-FLEY-şın", type:"noun", example:"Inflation affects purchasing power.", status:"new", score:0 },
+  { word:"interest", tr:"faiz / ilgi", phonetic:"İN-trest", type:"noun", example:"Compound interest grows your wealth.", status:"new", score:0 },
+  { word:"invest", tr:"yatırım yapmak", phonetic:"in-VEST", type:"verb", example:"Invest in yourself and your education.", status:"new", score:0 },
+  { word:"liability", tr:"yükümlülük / sorumluluk", phonetic:"lay-ı-BİL-i-ti", type:"noun", example:"Know your financial liabilities.", status:"new", score:0 },
+  { word:"negotiate", tr:"müzakere etmek", phonetic:"ni-GOW-şi-eyt", type:"verb", example:"Learn to negotiate your salary.", status:"new", score:0 },
+  { word:"pension", tr:"emeklilik maaşı", phonetic:"PEN-şın", type:"noun", example:"Start saving for your pension early.", status:"new", score:0 },
+  { word:"profit", tr:"kâr", phonetic:"PROF-it", type:"noun", example:"Work ethically to generate profit.", status:"new", score:0 },
+  { word:"salary", tr:"maaş", phonetic:"SAL-ı-ri", type:"noun", example:"She received a significant salary increase.", status:"new", score:0 },
+  { word:"shareholder", tr:"hissedar", phonetic:"ŞER-howl-dır", type:"noun", example:"She became a major shareholder.", status:"new", score:0 },
+  { word:"surplus", tr:"fazla / artık", phonetic:"SÖR-plıs", type:"noun", example:"A budget surplus is a positive sign.", status:"new", score:0 },
+  { word:"transaction", tr:"işlem", phonetic:"tran-ZAK-şın", type:"noun", example:"Complete the transaction securely.", status:"new", score:0 },
+  { word:"wealth", tr:"servet / zenginlik", phonetic:"WELTH", type:"noun", example:"True wealth is peace of mind.", status:"new", score:0 },
+  { word:"absorb", tr:"emmek / özümsemek", phonetic:"ıb-ZORB", type:"verb", example:"She absorbs information quickly.", status:"new", score:0 },
+  { word:"access", tr:"erişim / erişmek", phonetic:"AK-ses", type:"noun", example:"She has access to valuable resources.", status:"new", score:0 },
+  { word:"accurately", tr:"doğru bir şekilde", phonetic:"AK-yır-ıt-li", type:"adverb", example:"Complete tasks accurately and on time.", status:"new", score:0 },
+  { word:"achievement", tr:"başarı / kazanım", phonetic:"ı-ÇİV-mınt", type:"noun", example:"Every achievement begins with a decision.", status:"new", score:0 },
+  { word:"active", tr:"aktif / etkin", phonetic:"AK-tiv", type:"adjective", example:"Stay active throughout the day.", status:"new", score:0 },
+  { word:"adapt", tr:"uyum sağlamak", phonetic:"ı-DAPT", type:"verb", example:"Adapt to change rather than resisting it.", status:"new", score:0 },
+  { word:"admirable", tr:"takdire değer", phonetic:"AD-mi-rı-bıl", type:"adjective", example:"Her work ethic is truly admirable.", status:"new", score:0 },
+  { word:"adopt", tr:"benimsemek / sahiplenmek", phonetic:"ı-DOPT", type:"verb", example:"Adopt a positive mindset every morning.", status:"new", score:0 },
+  { word:"advance", tr:"ilerleme", phonetic:"ıd-VANS", type:"noun", example:"Science continues to advance rapidly.", status:"new", score:0 },
+  { word:"adversity", tr:"zorluk / sıkıntı", phonetic:"ıd-VÖR-si-ti", type:"noun", example:"Grow stronger through adversity.", status:"new", score:0 },
+  { word:"affirmation", tr:"olumlu onay", phonetic:"af-ır-MEY-şın", type:"noun", example:"Daily affirmations boost confidence.", status:"new", score:0 },
+  { word:"afterward", tr:"sonrasında", phonetic:"AF-tır-wırd", type:"adverb", example:"She rested and felt better afterward.", status:"new", score:0 },
+  { word:"aggregate", tr:"toplamak / bütün", phonetic:"AG-ri-gıt", type:"verb", example:"Aggregate small efforts for big results.", status:"new", score:0 },
+  { word:"alert", tr:"uyanık / uyarı", phonetic:"ı-LÖRD", type:"adjective", example:"Stay alert during the presentation.", status:"new", score:0 },
+  { word:"align", tr:"hizalamak / uyumlu olmak", phonetic:"ı-LAYN", type:"verb", example:"Align your actions with your values.", status:"new", score:0 },
+  { word:"alleviate", tr:"hafifletmek", phonetic:"ı-Li-vi-eyt", type:"verb", example:"Exercise can alleviate stress.", status:"new", score:0 },
+  { word:"allot", tr:"paylaştırmak / ayırmak", phonetic:"ı-LOT", type:"verb", example:"Allot enough time for rest.", status:"new", score:0 },
+  { word:"altruistic", tr:"özgecil / diğerkâm", phonetic:"al-tru-İS-tik", type:"adjective", example:"She is genuinely altruistic.", status:"new", score:0 },
+  { word:"ample", tr:"yeterli / geniş", phonetic:"AM-pıl", type:"adjective", example:"She has ample time to prepare.", status:"new", score:0 },
+  { word:"anchor", tr:"çıpa / sabitlemek", phonetic:"ANK-ır", type:"noun", example:"Family is her anchor in life.", status:"new", score:0 },
+  { word:"animated", tr:"canlı / hareketli", phonetic:"AN-i-mey-tıd", type:"adjective", example:"She gave an animated talk on stage.", status:"new", score:0 },
+  { word:"annex", tr:"ek / ilhak etmek", phonetic:"A-neks", type:"noun", example:"She moved to the office annex.", status:"new", score:0 },
+  { word:"articulate", tr:"açık ifade eden", phonetic:"ar-TİK-yu-lıt", type:"adjective", example:"She is very articulate.", status:"new", score:0 },
+  { word:"ascend", tr:"yükselmek / tırmanmak", phonetic:"ı-SEND", type:"verb", example:"She ascended the corporate ladder.", status:"new", score:0 },
+  { word:"attain", tr:"ulaşmak / elde etmek", phonetic:"ı-TEYN", type:"verb", example:"Attain your goals through discipline.", status:"new", score:0 },
+  { word:"attentive", tr:"dikkatli / özenli", phonetic:"ı-TEN-tiv", type:"adjective", example:"Be attentive in every conversation.", status:"new", score:0 },
+  { word:"attitude", tr:"tutum / tavır", phonetic:"AT-i-tyud", type:"noun", example:"Your attitude determines your altitude.", status:"new", score:0 },
+  { word:"audacious", tr:"cüretkar / cesur", phonetic:"o-DEY-şıs", type:"adjective", example:"She made an audacious career change.", status:"new", score:0 },
+  { word:"balance", tr:"denge", phonetic:"BAL-ıns", type:"noun", example:"Maintain balance in all areas of life.", status:"new", score:0 },
+  { word:"breathtaking", tr:"nefes kesen", phonetic:"BRETH-tey-king", type:"adjective", example:"The view from the mountain was breathtaking.", status:"new", score:0 },
+  { word:"capability", tr:"yetenek / kapasite", phonetic:"key-pı-BİL-i-ti", type:"noun", example:"Expand your capabilities daily.", status:"new", score:0 },
+  { word:"catalyst", tr:"katalizör / tetikleyici", phonetic:"KAT-ı-list", type:"noun", example:"She was the catalyst for change.", status:"new", score:0 },
+  { word:"celebrate", tr:"kutlamak", phonetic:"SEL-ı-breyt", type:"verb", example:"Celebrate every small victory.", status:"new", score:0 },
+  { word:"centered", tr:"odaklı / dengeli", phonetic:"SEN-tırd", type:"adjective", example:"Stay centered even under pressure.", status:"new", score:0 },
+  { word:"clarify", tr:"açıklamak / netleştirmek", phonetic:"KLAR-i-fay", type:"verb", example:"Clarify your goals and take action.", status:"new", score:0 },
+  { word:"coincide", tr:"örtüşmek / çakışmak", phonetic:"kow-in-SAYD", type:"verb", example:"Our ideas coincide on this matter.", status:"new", score:0 },
+  { word:"compelling", tr:"zorlayıcı / ilgi çekici", phonetic:"kım-PEL-ing", type:"adjective", example:"She made a compelling argument.", status:"new", score:0 },
+  { word:"conceive", tr:"tasarlamak / düşünmek", phonetic:"kın-SİV", type:"verb", example:"Conceive of a better future.", status:"new", score:0 },
+  { word:"considerable", tr:"önemli miktarda", phonetic:"kın-SİD-ır-ı-bıl", type:"adjective", example:"She made considerable progress.", status:"new", score:0 },
+  { word:"continuity", tr:"süreklilik", phonetic:"kon-ti-NYU-i-ti", type:"noun", example:"Continuity is key to long-term growth.", status:"new", score:0 },
+  { word:"conviction", tr:"kanaat / inanç", phonetic:"kın-VİK-şın", type:"noun", example:"She acts with strong conviction.", status:"new", score:0 },
+  { word:"coordinate", tr:"koordine etmek", phonetic:"kow-OR-di-neyt", type:"verb", example:"Coordinate your efforts effectively.", status:"new", score:0 },
+  { word:"craft", tr:"beceri / el sanatı / yaratmak", phonetic:"KRAFT", type:"noun", example:"She crafts her work with care.", status:"new", score:0 },
+  { word:"credible", tr:"güvenilir / inandırıcı", phonetic:"KRED-i-bıl", type:"adjective", example:"Build a credible personal brand.", status:"new", score:0 },
+  { word:"curiosity", tr:"merak", phonetic:"kyur-i-OS-i-ti", type:"noun", example:"Curiosity is the spark of all learning.", status:"new", score:0 },
+  { word:"decisive", tr:"kararlı / belirleyici", phonetic:"di-SAY-siv", type:"adjective", example:"Make decisive moves when it matters.", status:"new", score:0 },
+  { word:"deliberate", tr:"kasıtlı / bilinçli", phonetic:"di-LİB-ır-ıt", type:"adjective", example:"Every choice should be deliberate.", status:"new", score:0 },
+  { word:"delightful", tr:"keyifli / hoş", phonetic:"di-LAYT-fıl", type:"adjective", example:"She has a delightful sense of humor.", status:"new", score:0 },
+  { word:"depth", tr:"derinlik", phonetic:"DEPTH", type:"noun", example:"Go deep rather than staying on the surface.", status:"new", score:0 },
+  { word:"devoted", tr:"adanmış / sadık", phonetic:"di-VOW-tıd", type:"adjective", example:"She is devoted to her craft.", status:"new", score:0 },
+  { word:"diligence", tr:"özen / titizlik", phonetic:"DİL-i-cıns", type:"noun", example:"Diligence separates good from great.", status:"new", score:0 },
+  { word:"discern", tr:"fark etmek / ayırt etmek", phonetic:"di-ZÖRN", type:"verb", example:"Learn to discern what truly matters.", status:"new", score:0 },
+  { word:"discipline", tr:"disiplin", phonetic:"DİS-i-plin", type:"noun", example:"Discipline is the foundation of success.", status:"new", score:0 },
+  { word:"distinct", tr:"belirgin / ayrı", phonetic:"dis-TINKGT", type:"adjective", example:"She has a distinct personal style.", status:"new", score:0 },
+  { word:"dominant", tr:"baskın", phonetic:"DOM-i-nınt", type:"adjective", example:"She became the dominant figure.", status:"new", score:0 },
+  { word:"drive", tr:"azim / istek", phonetic:"DRAYV", type:"noun", example:"Her drive to succeed is unstoppable.", status:"new", score:0 },
+  { word:"durable", tr:"dayanıklı", phonetic:"DYU-rı-bıl", type:"adjective", example:"Build a durable work ethic.", status:"new", score:0 },
+  { word:"earnest", tr:"ciddi / samimi", phonetic:"ÖR-nıst", type:"adjective", example:"She is earnest in all she does.", status:"new", score:0 },
+  { word:"economy", tr:"tasarruf / tutumluluk", phonetic:"i-KON-ı-mi", type:"noun", example:"Practice economy in all decisions.", status:"new", score:0 },
+  { word:"elaborate", tr:"ayrıntılı açıklamak", phonetic:"i-LAB-ı-reyt", type:"verb", example:"Please elaborate on your point.", status:"new", score:0 },
+  { word:"elusive", tr:"yakalanması zor / belirsiz", phonetic:"i-LU-siv", type:"adjective", example:"Success can be elusive without focus.", status:"new", score:0 },
+  { word:"embark", tr:"başlamak / yola çıkmak", phonetic:"im-BARK", type:"verb", example:"She embarked on a new journey.", status:"new", score:0 },
+  { word:"eminence", tr:"üstünlük / ün", phonetic:"EM-i-nıns", type:"noun", example:"She rose to eminence in her field.", status:"new", score:0 },
+  { word:"emulate", tr:"örnek almak / taklit etmek", phonetic:"EM-yu-leyt", type:"verb", example:"Emulate those you admire most.", status:"new", score:0 },
+  { word:"endeavor", tr:"girişim / çaba", phonetic:"in-DEV-ır", type:"noun", example:"She pursues every endeavor with passion.", status:"new", score:0 },
+  { word:"endure", tr:"dayanmak", phonetic:"in-DYU-ır", type:"verb", example:"Endure the process to enjoy the result.", status:"new", score:0 },
+  { word:"energize", tr:"enerji vermek", phonetic:"EN-ır-cayz", type:"verb", example:"Morning exercise energizes your whole day.", status:"new", score:0 },
+  { word:"envision", tr:"hayal etmek / tasarlamak", phonetic:"in-VİJ-ın", type:"verb", example:"Envision the life you want to create.", status:"new", score:0 },
+  { word:"equip", tr:"donatmak / hazırlamak", phonetic:"i-KWİP", type:"verb", example:"Equip yourself with the right skills.", status:"new", score:0 },
+  { word:"essence", tr:"öz / esas", phonetic:"ES-ıns", type:"noun", example:"Simplicity is the essence of beauty.", status:"new", score:0 },
+  { word:"establish", tr:"kurmak / tesis etmek", phonetic:"is-TAB-liş", type:"verb", example:"Establish clear boundaries.", status:"new", score:0 },
+  { word:"exceed", tr:"aşmak", phonetic:"ik-SİD", type:"verb", example:"Exceed your own expectations.", status:"new", score:0 },
+  { word:"excitement", tr:"heyecan", phonetic:"ik-SAYT-mınt", type:"noun", example:"Approach each day with excitement.", status:"new", score:0 },
+  { word:"exemplary", tr:"örnek teşkil eden", phonetic:"ig-ZEM-plı-ri", type:"adjective", example:"She shows exemplary leadership.", status:"new", score:0 },
+  { word:"exhausted", tr:"tükenmiş / çok yorgun", phonetic:"ig-ZOS-tıd", type:"adjective", example:"She was exhausted but satisfied.", status:"new", score:0 },
+  { word:"expectation", tr:"beklenti", phonetic:"eks-pek-TEY-şın", type:"noun", example:"Manage expectations carefully.", status:"new", score:0 },
+  { word:"extraordinary", tr:"olağanüstü", phonetic:"ek-STROR-di-nı-ri", type:"adjective", example:"She leads an extraordinary life.", status:"new", score:0 },
+  { word:"facilitate", tr:"kolaylaştırmak", phonetic:"fı-SİL-i-teyt", type:"verb", example:"Good habits facilitate progress.", status:"new", score:0 },
+  { word:"fascinate", tr:"büyülemek / cezbetmek", phonetic:"FAS-i-neyt", type:"verb", example:"She was fascinated by astronomy.", status:"new", score:0 },
+  { word:"fierce", tr:"sert / güçlü / yoğun", phonetic:"FİYRS", type:"adjective", example:"She is a fierce competitor.", status:"new", score:0 },
+  { word:"forthright", tr:"dürüst / açık sözlü", phonetic:"FORTH-rayt", type:"adjective", example:"She is forthright and honest always.", status:"new", score:0 },
+  { word:"foster", tr:"teşvik etmek / beslemek", phonetic:"FOS-tır", type:"verb", example:"Foster a culture of learning.", status:"new", score:0 },
+  { word:"free-spirited", tr:"özgür ruhlu", phonetic:"FRi SPİR-i-tıd", type:"adjective", example:"She is free-spirited and adventurous.", status:"new", score:0 },
+  { word:"fresh", tr:"taze / yeni", phonetic:"FREŞ", type:"adjective", example:"Bring a fresh perspective to your work.", status:"new", score:0 },
+  { word:"fullness", tr:"doluluk / tamlık", phonetic:"FUL-nıs", type:"noun", example:"Live life with a sense of fullness.", status:"new", score:0 },
+  { word:"function", tr:"işlev / çalışmak", phonetic:"FANK-şın", type:"verb", example:"The team functioned well together.", status:"new", score:0 },
+  { word:"futuristic", tr:"fütüristik / gelecekçi", phonetic:"fyu-çır-İS-tik", type:"adjective", example:"She has a futuristic vision.", status:"new", score:0 },
+  { word:"generous", tr:"cömert", phonetic:"CEN-ır-ıs", type:"adjective", example:"She is generous with her time.", status:"new", score:0 },
+  { word:"gifted", tr:"yetenekli / üstün zekâlı", phonetic:"GİF-tıd", type:"adjective", example:"She is a gifted writer.", status:"new", score:0 },
+  { word:"graceful", tr:"zarif / güzel", phonetic:"GREYS-fıl", type:"adjective", example:"She handles pressure in a graceful way.", status:"new", score:0 },
+  { word:"grounded", tr:"yere basan / dengeli", phonetic:"GRAUN-dıd", type:"adjective", example:"Stay grounded despite success.", status:"new", score:0 },
+  { word:"hallmark", tr:"tanımlayıcı özellik", phonetic:"HOL-mark", type:"noun", example:"Excellence is her hallmark.", status:"new", score:0 },
+  { word:"harbor", tr:"barındırmak / limanı", phonetic:"HAR-bır", type:"verb", example:"Don't harbor negative feelings.", status:"new", score:0 },
+  { word:"hardworking", tr:"çalışkan", phonetic:"HARD-wörk-ing", type:"adjective", example:"She is one of the most hardworking people.", status:"new", score:0 },
+  { word:"harvest", tr:"hasat / kazanmak", phonetic:"HAR-vist", type:"verb", example:"Harvest the rewards of your efforts.", status:"new", score:0 },
+  { word:"heartfelt", tr:"içten / samimi", phonetic:"HART-felt", type:"adjective", example:"She gave a heartfelt speech.", status:"new", score:0 },
+  { word:"heighten", tr:"yükseltmek / artırmak", phonetic:"HAY-tın", type:"verb", example:"Heighten your awareness every day.", status:"new", score:0 },
+  { word:"helpful", tr:"yardımsever", phonetic:"HELP-fıl", type:"adjective", example:"Being helpful is a superpower.", status:"new", score:0 },
+  { word:"herald", tr:"müjdelemek / öncü", phonetic:"HER-ıld", type:"verb", example:"She heralded a new era of innovation.", status:"new", score:0 },
+  { word:"heroic", tr:"kahraman gibi / cesur", phonetic:"hi-ROW-ik", type:"adjective", example:"She made a heroic decision.", status:"new", score:0 },
+  { word:"highlight", tr:"öne çıkarmak", phonetic:"HAY-layt", type:"verb", example:"Highlight your best achievements.", status:"new", score:0 },
+  { word:"holistic", tr:"bütünsel / kapsamlı", phonetic:"how-LİS-tik", type:"adjective", example:"Take a holistic approach to health.", status:"new", score:0 },
+  { word:"honor", tr:"onur / saygı göstermek", phonetic:"ON-ır", type:"noun", example:"Honor your commitments always.", status:"new", score:0 },
+  { word:"imaginative", tr:"hayal gücü kuvvetli", phonetic:"i-MAC-i-nı-tiv", type:"adjective", example:"She is imaginative and original.", status:"new", score:0 },
+  { word:"immense", tr:"çok büyük / muazzam", phonetic:"i-MENS", type:"adjective", example:"She has immense potential.", status:"new", score:0 },
+  { word:"impactful", tr:"etkili / güçlü", phonetic:"İM-pakt-fıl", type:"adjective", example:"She does impactful work every day.", status:"new", score:0 },
+  { word:"inclined", tr:"eğilimli", phonetic:"in-KLYND", type:"adjective", example:"She is inclined to help others.", status:"new", score:0 },
+  { word:"industrious", tr:"çalışkan / gayretli", phonetic:"in-DAS-tri-ıs", type:"adjective", example:"She is industrious and ambitious.", status:"new", score:0 },
+  { word:"influential", tr:"etkili / nüfuzlu", phonetic:"in-flu-EN-şıl", type:"adjective", example:"She is an influential leader.", status:"new", score:0 },
+  { word:"introspective", tr:"içe dönük / kendini inceleyen", phonetic:"in-trı-SPEK-tiv", type:"adjective", example:"She is introspective and thoughtful.", status:"new", score:0 },
+  { word:"invest", tr:"yatırım yapmak", phonetic:"in-VEST", type:"verb", example:"Invest time in meaningful activities.", status:"new", score:0 },
+  { word:"keen", tr:"istekli / meraklı", phonetic:"KİN", type:"adjective", example:"She is keen to develop her skills.", status:"new", score:0 },
+  { word:"kindle", tr:"tutuşturmak / ateşlemek", phonetic:"KİN-dıl", type:"verb", example:"Kindle your passion for learning.", status:"new", score:0 },
+  { word:"landmark", tr:"dönüm noktası", phonetic:"LAND-mark", type:"noun", example:"This achievement is a landmark.", status:"new", score:0 },
+  { word:"lasting", tr:"kalıcı / uzun süreli", phonetic:"LAS-ting", type:"adjective", example:"Build lasting habits for success.", status:"new", score:0 },
+  { word:"leap", tr:"sıçramak / atılım", phonetic:"LİP", type:"verb", example:"Take a leap of faith.", status:"new", score:0 },
+  { word:"legacy", tr:"miras / kalıcı iz", phonetic:"LEG-ı-si", type:"noun", example:"What legacy do you want to leave?", status:"new", score:0 },
+  { word:"legitimate", tr:"meşru / geçerli", phonetic:"li-CİT-i-mit", type:"adjective", example:"She has a legitimate claim to success.", status:"new", score:0 },
+  { word:"lifelong", tr:"yaşam boyu", phonetic:"LAYF-long", type:"adjective", example:"Be a lifelong learner.", status:"new", score:0 },
+  { word:"luminous", tr:"parlak / aydınlık", phonetic:"LU-mi-nıs", type:"adjective", example:"She has a luminous personality.", status:"new", score:0 },
+  { word:"magnify", tr:"büyütmek / güçlendirmek", phonetic:"MAG-ni-fay", type:"verb", example:"Magnify your strengths through practice.", status:"new", score:0 },
+  { word:"manifest", tr:"tezahür etmek / göstermek", phonetic:"MAN-i-fest", type:"verb", example:"Manifest your dreams through action.", status:"new", score:0 },
+  { word:"mastery", tr:"ustalık", phonetic:"MAS-tır-i", type:"noun", example:"Mastery requires years of dedication.", status:"new", score:0 },
+  { word:"meticulous", tr:"titiz / özenli", phonetic:"mı-TİK-yu-lıs", type:"adjective", example:"She is meticulous in her work.", status:"new", score:0 },
+  { word:"momentum", tr:"ivme / güç", phonetic:"mow-MEN-tım", type:"noun", example:"Build momentum through daily action.", status:"new", score:0 },
+  { word:"motivated", tr:"motive olmuş", phonetic:"MOW-ti-vey-tıd", type:"adjective", example:"Stay motivated on difficult days.", status:"new", score:0 },
+  { word:"nurturing", tr:"besleyici / geliştirici", phonetic:"NÖR-çır-ing", type:"adjective", example:"She has a nurturing personality.", status:"new", score:0 },
+  { word:"openness", tr:"açıklık / şeffaflık", phonetic:"OW-pın-nıs", type:"noun", example:"Openness leads to growth.", status:"new", score:0 },
+  { word:"optimum", tr:"en uygun / optimum", phonetic:"OP-ti-mım", type:"adjective", example:"Find the optimum balance.", status:"new", score:0 },
+  { word:"originality", tr:"özgünlük", phonetic:"ı-rij-i-NAL-i-ti", type:"noun", example:"She stands out for her originality.", status:"new", score:0 },
+  { word:"passionate", tr:"tutkulu", phonetic:"PAŞ-ı-nıt", type:"adjective", example:"Be passionate about your work.", status:"new", score:0 },
+  { word:"peak", tr:"zirve / en üst nokta", phonetic:"PİK", type:"noun", example:"Reach your peak performance.", status:"new", score:0 },
+  { word:"persevere", tr:"azimle devam etmek", phonetic:"pör-si-VİYR", type:"verb", example:"Persevere even when it gets hard.", status:"new", score:0 },
+  { word:"pivotal", tr:"kilit / dönüm noktası olan", phonetic:"PİV-ı-tıl", type:"adjective", example:"This is a pivotal moment.", status:"new", score:0 },
+  { word:"poised", tr:"dengeli / hazır", phonetic:"POYZD", type:"adjective", example:"She was poised and confident.", status:"new", score:0 },
+  { word:"polish", tr:"cilalamak / geliştirmek", phonetic:"POL-iş", type:"verb", example:"Polish your skills every day.", status:"new", score:0 },
+  { word:"precision", tr:"hassasiyet / kesinlik", phonetic:"pri-ZİJ-ın", type:"noun", example:"Do everything with precision.", status:"new", score:0 },
+  { word:"presence", tr:"varlık / duruş", phonetic:"PREZ-ıns", type:"noun", example:"Your presence makes a difference.", status:"new", score:0 },
+  { word:"principled", tr:"ilkeli", phonetic:"PRİN-sı-pıld", type:"adjective", example:"She is a principled leader.", status:"new", score:0 },
+  { word:"proficiency", tr:"yeterlilik / ustalık", phonetic:"prı-FİŞ-ın-si", type:"noun", example:"Build proficiency in your field.", status:"new", score:0 },
+  { word:"profound", tr:"derin / köklü", phonetic:"prı-FAUND", type:"adjective", example:"She had a profound impact on many lives.", status:"new", score:0 },
+  { word:"pursuit", tr:"peşinde koşma / arayış", phonetic:"pır-SUT", type:"noun", example:"The pursuit of excellence never ends.", status:"new", score:0 },
+  { word:"radiate", tr:"yaymak / ışımak", phonetic:"REY-di-eyt", type:"verb", example:"She radiates positivity everywhere.", status:"new", score:0 },
+  { word:"recharge", tr:"enerji depolamak", phonetic:"ri-ÇARC", type:"verb", example:"Recharge your energy on weekends.", status:"new", score:0 },
+  { word:"reclaim", tr:"geri kazanmak", phonetic:"ri-KLEYM", type:"verb", example:"Reclaim your time and energy.", status:"new", score:0 },
+  { word:"remarkable", tr:"dikkat çekici", phonetic:"ri-MAR-kı-bıl", type:"adjective", example:"She achieved remarkable results.", status:"new", score:0 },
+  { word:"renew", tr:"yenilemek", phonetic:"ri-NYU", type:"verb", example:"Renew your commitment to your goals.", status:"new", score:0 },
+  { word:"reputation", tr:"itibar / şöhret", phonetic:"rep-yu-TEY-şın", type:"noun", example:"Build a strong reputation over time.", status:"new", score:0 },
+  { word:"respect", tr:"saygı", phonetic:"ri-SPEKT", type:"noun", example:"Respect yourself and others.", status:"new", score:0 },
+  { word:"restore", tr:"geri kazandırmak", phonetic:"ri-STOR", type:"verb", example:"Restore balance in your life.", status:"new", score:0 },
+  { word:"revise", tr:"gözden geçirmek", phonetic:"ri-VAYZ", type:"verb", example:"Revise your plan when needed.", status:"new", score:0 },
+  { word:"rewarding", tr:"ödüllendirici", phonetic:"ri-WOR-ding", type:"adjective", example:"Teaching is a rewarding career.", status:"new", score:0 },
+  { word:"secure", tr:"güvence altına almak / güvenli", phonetic:"si-KYU-ır", type:"adjective", example:"Secure your financial future.", status:"new", score:0 },
+  { word:"self-discipline", tr:"öz disiplin", phonetic:"SELF DİS-i-plin", type:"noun", example:"Self-discipline is the highest virtue.", status:"new", score:0 },
+  { word:"spark", tr:"kıvılcım / harekete geçirmek", phonetic:"SPARK", type:"noun", example:"Find the spark that ignites your passion.", status:"new", score:0 },
+  { word:"steadfast", tr:"kararlı / sarsılmaz", phonetic:"STED-fast", type:"adjective", example:"She is steadfast in her principles.", status:"new", score:0 },
+  { word:"stimulating", tr:"uyarıcı / ilgi çekici", phonetic:"STİM-yu-ley-ting", type:"adjective", example:"She finds her work highly stimulating.", status:"new", score:0 },
+  { word:"strive", tr:"çabalamak / gayret etmek", phonetic:"STRAYV", type:"verb", example:"Always strive to be better.", status:"new", score:0 },
+  { word:"substantial", tr:"büyük / önemli", phonetic:"sıb-STAN-şıl", type:"adjective", example:"She made a substantial improvement.", status:"new", score:0 },
+  { word:"swift", tr:"hızlı / çabuk", phonetic:"SWİFT", type:"adjective", example:"She made a swift recovery.", status:"new", score:0 },
+  { word:"tactical", tr:"taktiksel", phonetic:"TAK-ti-kıl", type:"adjective", example:"She made a tactical decision.", status:"new", score:0 },
+  { word:"thrive", tr:"gelişmek / başarılı olmak", phonetic:"THRAYV", type:"verb", example:"She thrives under pressure.", status:"new", score:0 },
+  { word:"transcend", tr:"aşmak / üstüne çıkmak", phonetic:"tran-SEND", type:"verb", example:"Transcend your perceived limitations.", status:"new", score:0 },
+  { word:"triumph", tr:"zafer / galip gelmek", phonetic:"TRAY-ımf", type:"noun", example:"She celebrated her triumph.", status:"new", score:0 },
+  { word:"trustworthy", tr:"güvenilir", phonetic:"TRAST-wör-thi", type:"adjective", example:"Always be trustworthy.", status:"new", score:0 },
+  { word:"undaunted", tr:"yılmaz / yıkılmaz", phonetic:"an-DON-tıd", type:"adjective", example:"She was undaunted by the challenge.", status:"new", score:0 },
+  { word:"unleash", tr:"serbest bırakmak", phonetic:"an-LİŞ", type:"verb", example:"Unleash your full potential.", status:"new", score:0 },
+  { word:"unwavering", tr:"kararlı / sarsılmaz", phonetic:"an-WEY-vır-ing", type:"adjective", example:"She has an unwavering determination.", status:"new", score:0 },
+  { word:"uplift", tr:"yükseltmek / iyileştirmek", phonetic:"AP-lift", type:"verb", example:"Uplift those around you.", status:"new", score:0 },
+  { word:"uplifting", tr:"yüz güldürücü / moral verici", phonetic:"AP-lift-ing", type:"adjective", example:"She gave an uplifting speech.", status:"new", score:0 },
+  { word:"vibrant", tr:"canlı / enerjik", phonetic:"VAY-brınt", type:"adjective", example:"She has a vibrant personality.", status:"new", score:0 },
+  { word:"vigor", tr:"güç / canlılık", phonetic:"VİG-ır", type:"noun", example:"She approaches life with great vigor.", status:"new", score:0 },
+  { word:"virtue", tr:"erdem / fazilet", phonetic:"VÖR-çu", type:"noun", example:"Patience is a great virtue.", status:"new", score:0 },
+  { word:"visionary", tr:"vizyoner", phonetic:"VİJ-ın-eri", type:"adjective", example:"She is a visionary leader.", status:"new", score:0 },
+  { word:"vivacious", tr:"canlı / neşeli", phonetic:"vi-VEY-şıs", type:"adjective", example:"She is vivacious and full of life.", status:"new", score:0 },
+  { word:"wholehearted", tr:"tam kalpten / içten", phonetic:"HOWL-har-tıd", type:"adjective", example:"She gave a wholehearted effort.", status:"new", score:0 },
+  { word:"willpower", tr:"irade / kararlılık", phonetic:"WİL-pau-ır", type:"noun", example:"Willpower gets you through hard days.", status:"new", score:0 },
+  { word:"worthy", tr:"layık / değer", phonetic:"WÖR-thi", type:"adjective", example:"You are worthy of success.", status:"new", score:0 },
+  { word:"zealous", tr:"hevesli / gayretli", phonetic:"ZEL-ıs", type:"adjective", example:"She is zealous about her mission.", status:"new", score:0 },
+  { word:"accelerate", tr:"hızlandırmak", phonetic:"ık-SEL-ı-reyt", type:"verb", example:"Accelerate your growth with mentorship.", status:"new", score:0 },
+  { word:"benchmark", tr:"referans noktası", phonetic:"BENCH-mark", type:"noun", example:"Set a benchmark and exceed it.", status:"new", score:0 },
+  { word:"channel", tr:"yönlendirmek / kanal", phonetic:"ÇAN-ıl", type:"verb", example:"Channel your energy wisely.", status:"new", score:0 },
+  { word:"deduce", tr:"sonuç çıkarmak", phonetic:"di-DUS", type:"verb", example:"Deduce the answer from the clues.", status:"new", score:0 },
+  { word:"effortless", tr:"zahmetsiz / kolay", phonetic:"EF-ırt-lıs", type:"adjective", example:"She makes everything look effortless.", status:"new", score:0 },
+  { word:"fierce", tr:"sert / güçlü", phonetic:"FİYRS", type:"adjective", example:"She is a fierce advocate for justice.", status:"new", score:0 },
+  { word:"genuine", tr:"gerçek", phonetic:"CEN-yu-in", type:"adjective", example:"Be genuine in all interactions.", status:"new", score:0 },
+  { word:"harness", tr:"koşum / kullanmak", phonetic:"HAR-nıs", type:"verb", example:"Harness the power of your strengths.", status:"new", score:0 },
+  { word:"illustrate", tr:"açıklamak / göstermek", phonetic:"İL-ıs-treyt", type:"verb", example:"Use examples to illustrate your point.", status:"new", score:0 },
+  { word:"judgement", tr:"muhakeme / yargı", phonetic:"CAC-mınt", type:"noun", example:"Use sound judgement in all decisions.", status:"new", score:0 },
+  { word:"knowledgeable", tr:"bilgili / uzman", phonetic:"NOL-ic-ı-bıl", type:"adjective", example:"She is knowledgeable in many fields.", status:"new", score:0 },
+  { word:"limitless", tr:"sınırsız", phonetic:"LİM-it-lıs", type:"adjective", example:"Your potential is limitless.", status:"new", score:0 },
+  { word:"mindfulness", tr:"bilinçlilik / farkındalık", phonetic:"MAYND-fıl-nıs", type:"noun", example:"Practice mindfulness every morning.", status:"new", score:0 },
+  { word:"niche", tr:"niş / özel alan", phonetic:"NİÇ", type:"noun", example:"Find your niche and dominate it.", status:"new", score:0 },
+  { word:"objective", tr:"amaç / hedef", phonetic:"ıb-CEK-tiv", type:"noun", example:"Define your objective clearly.", status:"new", score:0 },
+  { word:"prioritize", tr:"önceliklendirmek", phonetic:"pray-OR-i-tayz", type:"verb", example:"Prioritize tasks by importance.", status:"new", score:0 },
+  { word:"refocus", tr:"yeniden odaklanmak", phonetic:"ri-FOW-kıs", type:"verb", example:"Refocus when you feel distracted.", status:"new", score:0 },
+  { word:"streamline", tr:"düzene sokmak", phonetic:"STRİM-layn", type:"verb", example:"Streamline your daily processes.", status:"new", score:0 }
+];
+
+let words = JSON.parse(localStorage.getItem('wf-words') || 'null') || DEFAULT_WORDS;
+let streak = parseInt(localStorage.getItem('wf-streak') || '0');
+let daily = parseInt(localStorage.getItem('wf-daily') || '0');
+let totalCorrect = parseInt(localStorage.getItem('wf-correct') || '0');
+let totalAnswered = parseInt(localStorage.getItem('wf-answered') || '0');
+let cardIndex = 0;
+let isFlipped = false;
+let quizType = 'mc'; // mc or fill
+let qCorrect = 0, qWrong = 0, qStreak = 0;
+let quizActive = false;
+let fillAnswer = '';
+
+function save() {
+  localStorage.setItem('wf-words', JSON.stringify(words));
+  localStorage.setItem('wf-streak', streak);
+  localStorage.setItem('wf-daily', daily);
+  localStorage.setItem('wf-correct', totalCorrect);
+  localStorage.setItem('wf-answered', totalAnswered);
+}
+
+// ========== STATS ==========
+function updateStats() {
+  document.getElementById('statTotal').textContent = words.length;
+  document.getElementById('statKnown').textContent = words.filter(w=>w.status==='known').length;
+  const pct = totalAnswered > 0 ? Math.round((totalCorrect/totalAnswered)*100) : 0;
+  document.getElementById('statScore').textContent = pct + '%';
+  document.getElementById('streakCount').textContent = streak;
+  const p = Math.min(daily, 10);
+  document.getElementById('progressBar').style.width = (p*10) + '%';
+  document.getElementById('progressText').textContent = p + ' / 10 kelime';
+}
+
+// ========== TABS ==========
+function switchTab(name) {
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  event.currentTarget.classList.add('active');
+  if(name==='words') renderWordList();
+  if(name==='flashcard') loadCard();
+  if(name==='quiz') startQuiz();
+}
+
+// ========== FLASHCARD ==========
+function loadCard() {
+  if(words.length === 0) return;
+  const w = words[cardIndex];
+  document.getElementById('fc-word').textContent = w.word;
+  document.getElementById('fc-phonetic').textContent = w.phonetic || '';
+  document.getElementById('fc-type').textContent = w.type || '';
+  document.getElementById('fc-translation').textContent = w.tr;
+  document.getElementById('fc-example').textContent = w.example || '';
+  isFlipped = false;
+  document.getElementById('flashcard').classList.remove('flipped');
+  document.getElementById('card-actions').style.display = 'none';
+}
+
+function flipCard() {
+  isFlipped = !isFlipped;
+  document.getElementById('flashcard').classList.toggle('flipped', isFlipped);
+  if(isFlipped) {
+    document.getElementById('card-actions').style.display = 'flex';
+    daily = Math.min(daily + 0.5, 10);
+    save();
+    updateStats();
+  }
+}
+
+function nextCard() {
+  cardIndex = (cardIndex + 1) % words.length;
+  loadCard();
+}
+
+function shuffleCards() {
+  words = [...words].sort(()=>Math.random()-0.5);
+  cardIndex = 0;
+  loadCard();
+  toast('🔀 Karıştırıldı!');
+}
+
+function rateCard(rating) {
+  const w = words[cardIndex];
+  if(rating === 'knew') {
+    w.score = (w.score||0) + 2;
+    if(w.score >= 4) w.status = 'known';
+    toast('✅ Harika! +2 puan');
+    streak++;
+  } else if(rating === 'hard') {
+    w.score = Math.max(0,(w.score||0)+1);
+    w.status = 'learning';
+    toast('🤔 Biraz daha çalış');
+  } else {
+    w.score = 0;
+    w.status = 'learning';
+    toast('😓 Bu kelimeyi tekrar et');
+  }
+  save();
+  updateStats();
+  setTimeout(()=>nextCard(), 300);
+}
+
+// ========== QUIZ ==========
+function startQuiz() {
+  if(words.length < 4) { document.getElementById('quiz-mc').innerHTML = '<p style="color:var(--muted);text-align:center;padding:40px">Quiz için en az 4 kelime gerekli. Önce kelime ekleyin!</p>'; return; }
+  if(quizType === 'mc') loadMC();
+  else loadFill();
+}
+
+function nextQuiz() {
+  if(quizType==='mc') loadMC();
+  else loadFill();
+}
+
+function loadMC() {
+  document.getElementById('quiz-mc').style.display = 'block';
+  document.getElementById('quiz-fill').style.display = 'none';
+  const w = words[Math.floor(Math.random()*words.length)];
+  document.getElementById('q-turkish').textContent = w.tr;
+  document.getElementById('q-sent-text').textContent = w.example || 'Bu kelimeyi bir cümlede kullan.';
+  
+  // 4 seçenek
+  let opts = [w.word];
+  let pool = words.filter(x=>x.word!==w.word);
+  while(opts.length < 4 && pool.length > 0) {
+    const r = pool.splice(Math.floor(Math.random()*pool.length),1)[0];
+    opts.push(r.word);
+  }
+  opts = opts.sort(()=>Math.random()-0.5);
+  
+  const container = document.getElementById('q-options');
+  container.innerHTML = '';
+  opts.forEach(o => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.textContent = o;
+    btn.onclick = () => checkMC(o, w.word, container);
+    container.appendChild(btn);
+  });
+  quizActive = true;
+}
+
+function checkMC(chosen, correct, container) {
+  if(!quizActive) return;
+  quizActive = false;
+  totalAnswered++;
+  container.querySelectorAll('.option-btn').forEach(b => {
+    b.disabled = true;
+    if(b.textContent === correct) b.classList.add('correct');
+    if(b.textContent === chosen && chosen !== correct) b.classList.add('wrong');
+  });
+  if(chosen === correct) {
+    qCorrect++; qStreak++;
+    totalCorrect++;
+    toast('✅ Doğru! +' + qStreak + ' seri');
+  } else {
+    qWrong++; qStreak = 0;
+    toast('❌ Yanlış! Doğrusu: ' + correct);
+  }
+  document.getElementById('quizCorrect').textContent = qCorrect;
+  document.getElementById('quizWrong').textContent = qWrong;
+  document.getElementById('quizStreak').textContent = qStreak;
+  daily = Math.min(daily+1, 10);
+  save(); updateStats();
+}
+
+function loadFill() {
+  document.getElementById('quiz-mc').style.display = 'none';
+  document.getElementById('quiz-fill').style.display = 'block';
+  const w = words[Math.floor(Math.random()*words.length)];
+  fillAnswer = w.word.toLowerCase();
+  const sentence = w.example || `She is very ${w.word} today.`;
+  const blanked = sentence.replace(new RegExp(w.word, 'gi'), '______');
+  document.getElementById('q-fill-sentence').innerHTML = `"${blanked}"`;
+  document.getElementById('q-fill-input').value = '';
+  document.getElementById('q-fill-feedback').textContent = '';
+  document.getElementById('q-fill-feedback').style.color = '';
+  document.getElementById('q-fill-input').focus();
+  quizActive = true;
+}
+
+function checkFill() {
+  if(!quizActive) return;
+  const input = document.getElementById('q-fill-input').value.trim().toLowerCase();
+  const fb = document.getElementById('q-fill-feedback');
+  totalAnswered++;
+  if(input === fillAnswer) {
+    qCorrect++; qStreak++; totalCorrect++;
+    fb.textContent = '✅ Doğru! Harika!';
+    fb.style.color = '#5cf8d1';
+    toast('✅ Mükemmel!');
+  } else {
+    qWrong++; qStreak = 0;
+    fb.textContent = `❌ Yanlış. Doğru cevap: "${fillAnswer}"`;
+    fb.style.color = '#fc5c7d';
+    toast('❌ Yanlış cevap');
+  }
+  document.getElementById('quizCorrect').textContent = qCorrect;
+  document.getElementById('quizWrong').textContent = qWrong;
+  document.getElementById('quizStreak').textContent = qStreak;
+  quizActive = false;
+  daily = Math.min(daily+1, 10);
+  save(); updateStats();
+}
+
+function toggleQuizType() {
+  quizType = quizType === 'mc' ? 'fill' : 'mc';
+  toast(quizType === 'mc' ? '🎯 Çoktan seçmeli mod' : '✍️ Yazma modu');
+  nextQuiz();
+}
+
+// ========== WORD LIST ==========
+function renderWordList() {
+  const q = (document.getElementById('search-input')?.value || '').toLowerCase();
+  const grid = document.getElementById('word-grid');
+  const filtered = words.filter(w => w.word.toLowerCase().includes(q) || w.tr.toLowerCase().includes(q));
+  grid.innerHTML = filtered.map((w,i) => `
+    <div class="word-card" onclick="viewWord(${words.indexOf(w)})">
+      <div class="word-card-header">
+        <div class="word-card-word">${w.word}</div>
+        <div class="word-card-status status-${w.status||'new'}"></div>
+      </div>
+      <div class="word-card-type">${w.type||''} ${w.phonetic||''}</div>
+      <div class="word-card-tr">${w.tr}</div>
+      <div class="word-card-example">${w.example||''}</div>
+    </div>
+  `).join('');
+}
+
+function viewWord(i) {
+  cardIndex = i;
+  loadCard();
+  switchTabDirect('flashcard');
+}
+
+function switchTabDirect(name) {
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  document.querySelectorAll('.tab-btn')[name==='flashcard'?0:name==='quiz'?1:name==='words'?2:3].classList.add('active');
+}
+
+// ========== ADD WORD ==========
+function addWord() {
+  const word = document.getElementById('new-word').value.trim();
+  const tr = document.getElementById('new-tr').value.trim();
+  if(!word || !tr) { toast('⚠️ Kelime ve anlamı zorunlu!'); return; }
+  words.push({
+    word,
+    tr,
+    phonetic: document.getElementById('new-phonetic').value.trim(),
+    type: document.getElementById('new-type').value,
+    example: document.getElementById('new-example').value.trim(),
+    status:'new',
+    score:0
+  });
+  ['new-word','new-tr','new-phonetic','new-example'].forEach(id=>document.getElementById(id).value='');
+  save(); updateStats();
+  toast('✅ Kelime eklendi: ' + word);
+}
+
+function bulkAdd() {
+  const lines = document.getElementById('bulk-input').value.trim().split('\n');
+  let count = 0;
+  lines.forEach(line => {
+    const parts = line.split(',');
+    if(parts.length >= 2) {
+      words.push({ word:parts[0].trim(), tr:parts[1].trim(), example:parts[2]?.trim()||'', type:'noun', status:'new', score:0 });
+      count++;
+    }
+  });
+  document.getElementById('bulk-input').value = '';
+  save(); updateStats();
+  toast(`✅ ${count} kelime eklendi!`);
+}
+
+// ========== TOAST ==========
+let toastTimer;
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>el.classList.remove('show'), 2500);
+}
+
+// ========== INIT ==========
+loadCard();
+updateStats();
+</script>
+</body>
+</html>
